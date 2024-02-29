@@ -14,7 +14,7 @@ public class DiceManagerEditor : Editor
         
         if (GUILayout.Button("Throw"))
         {
-            diceManager.ThrowDice();
+            if(Application.isPlaying) diceManager.ThrowDice();
         }
     }
 }

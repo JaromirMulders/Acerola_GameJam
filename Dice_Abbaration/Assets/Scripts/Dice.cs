@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Dice : MonoBehaviour
 {
-    public bool isThrown = true;
+    public bool isMoving = true;
     public int currentSide = 0;
 
-    public Material material = null;
-    public Texture[] sideTextures = null;
+    public Texture[] sideTextures;
+
+    public List<GameObject> sideObjects = new List<GameObject>();
+    private List<Renderer> sideRenderer = new List<Renderer>();
 
     private Vector3[] sides =
     {
@@ -23,31 +25,35 @@ public class Dice : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
+
+        for(int i = 0; i < sideObjects.Count; i++)
+        {
+            sideRenderer.Add(sideObjects[i].GetComponent<Renderer>());
+            sideRenderer[i].material.mainTexture = sideTextures[i];
+        }
     }
 
     void Update()
     {
         CheckThrow();
-        CheckSide();
-
     }
 
     void CheckThrow()
     {
-        if (!isThrown) return;
+        if (!isMoving) return;
 
-        if (rigidBody.velocity == Vector3.zero && rigidBody.angularVelocity == Vector3.zero)
+        if (rigidBody.velocity.magnitude == 0.0f && rigidBody.angularVelocity.magnitude == 0.0f)
         {
-            isThrown = false;
+            CheckSide();
+
+            isMoving = false;
         }
         
     }
 
     //from: https://forum.unity.com/threads/dice-which-face-is-up.10443/
-    void CheckSide()
+    public void CheckSide()
     {
-        if(isThrown) return;
-
         float maxY = float.NegativeInfinity;
         int result = -1;
 
@@ -65,10 +71,12 @@ public class Dice : MonoBehaviour
                 result = 6 - i; // sum of opposite sides = 7
                 maxY = -worldSpace.y;
             }
+
+
         }
 
+
         currentSide = result;
-        Debug.Log(currentSide);
     }
 
 

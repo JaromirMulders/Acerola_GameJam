@@ -19,6 +19,16 @@ public class DiceManager : MonoBehaviour
 
     private bool SetCollectFlag = false;
 
+    private Vector3[] diceAngles =
+    {
+        new Vector3(0.0f, 0.0f, 0.0f), //1
+        new Vector3(270.0f, 0.0f, 0.0f),//2
+        new Vector3(0.0f, 0.0f, 90.0f), //3
+        new Vector3(0.0f, 0.0f, 270.0f), //4
+        new Vector3(90.0f, 0.0f, 0.0f), //5
+        new Vector3(180.0f, 180.0f, 0.0f) //6
+    };
+
     public enum GameState
     {
         Throw,
@@ -63,21 +73,23 @@ public class DiceManager : MonoBehaviour
         }
 
         if(!SetCollectFlag) StartCoroutine(SetCollect());
-        SetCollectFlag = true;
     }
 
     private IEnumerator SetCollect()
     {
-        
-        yield return new WaitForSeconds(0.5f);
+        SetCollectFlag = true;
+
+        yield return new WaitForSeconds(1.0f);
 
         for (int i = 0; i < allDice.Count; i++)
         {
             allDice[i].GetComponent<Rigidbody>().isKinematic = true;
+
+            allDiceScripts[i].CheckSide();
+
             dicePositions.Add(new Vector3(((float)(i % 8) / 7.0f * 2.0f - 1.0f) * 8.0f, 0.0f, 0.0f));
         }
 
-        SetCollectFlag = false;
         gameState = GameState.Collect;
 
     }
@@ -89,9 +101,8 @@ public class DiceManager : MonoBehaviour
         //check if there are still dice rolling
         for (int i = 0; i < allDice.Count; i++)
         {
-            
             allDice[i].transform.position = Vector3.Lerp(allDice[i].transform.position, dicePositions[i], t);
-
+            allDice[i].transform.rotation = Quaternion.Slerp(allDice[i].transform.rotation, Quaternion.Euler(diceAngles[allDiceScripts[i].currentSide -1]),t * 5.0f);
         }
 
     }

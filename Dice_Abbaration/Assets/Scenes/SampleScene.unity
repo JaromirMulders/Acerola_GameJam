@@ -615,7 +615,7 @@ MonoBehaviour:
   rotForce: 5
   throwAmount: 5
   throwSpeed: 0.25
-  moveSpeed: 2
+  moveSpeed: 5
   allDice: []
   dicePositions: []
   allDiceScripts: []

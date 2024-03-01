@@ -42,14 +42,14 @@ public class Dice : MonoBehaviour
     {
         if (!isMoving) return;
 
-        if (rigidBody.velocity.magnitude == 0.0f && rigidBody.angularVelocity.magnitude == 0.0f)
+        if (rigidBody.velocity == Vector3.zero && rigidBody.angularVelocity == Vector3.zero)
         {
-            CheckSide();
-
             isMoving = false;
         }
         
     }
+
+
 
     //from: https://forum.unity.com/threads/dice-which-face-is-up.10443/
     public void CheckSide()

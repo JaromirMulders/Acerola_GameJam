@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
+using System.Linq;
 
 public class DiceManager : MonoBehaviour
 {
@@ -14,10 +15,12 @@ public class DiceManager : MonoBehaviour
     public float moveSpeed = 1.0f;
 
     public List<GameObject> allDice = new List<GameObject>();
-    public List<Vector3> dicePositions = new List<Vector3>();
-    public List<Dice> allDiceScripts = new List<Dice>();
+    private List<Vector3> dicePositions = new List<Vector3>();
+    private List<Dice> allDiceScripts = new List<Dice>();
 
     private bool SetCollectFlag = false;
+
+    private Vector3 baseScale = new Vector3(50.0f, 50.0f, 50.0f);
 
     private Vector3[] diceAngles =
     {
@@ -33,7 +36,8 @@ public class DiceManager : MonoBehaviour
     {
         Throw,
         Wait,
-        Collect
+        Collect,
+        Select
     }
 
     public GameState gameState = GameState.Throw;
@@ -45,6 +49,8 @@ public class DiceManager : MonoBehaviour
 
     void Update()
     {
+
+
         if(gameState == GameState.Throw)
         {
 
@@ -56,8 +62,13 @@ public class DiceManager : MonoBehaviour
         else if (gameState == GameState.Collect)
         {
             CollectDice();
+        
+        }else if (gameState == GameState.Select)
+        {
+            SelectDice();
         }
     }
+
 
     public void ThrowDice()
     {
@@ -81,14 +92,24 @@ public class DiceManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
 
+        List<int> diceValues = new List<int>();
+
         for (int i = 0; i < allDice.Count; i++)
         {
             allDice[i].GetComponent<Rigidbody>().isKinematic = true;
 
             allDiceScripts[i].CheckSide();
+            diceValues.Add(allDiceScripts[i].currentSide);
 
             dicePositions.Add(new Vector3(((float)(i % 8) / 7.0f * 2.0f - 1.0f) * 8.0f, 0.0f, 0.0f));
         }
+
+        // Sort allDice and allDiceScripts based on diceValues
+        var sortedDice = allDice.OrderBy(dice => allDiceScripts[allDice.IndexOf(dice)].currentSide).ToList();
+        var sortedDiceScripts = sortedDice.Select(dice => dice.GetComponent<Dice>()).ToList();
+
+        allDice = sortedDice;
+        allDiceScripts = sortedDiceScripts;
 
         gameState = GameState.Collect;
 
@@ -98,13 +119,36 @@ public class DiceManager : MonoBehaviour
     {
         float t = Time.deltaTime * moveSpeed;
 
+        bool diceMoveing = false;
+
+
         //check if there are still dice rolling
         for (int i = 0; i < allDice.Count; i++)
         {
             allDice[i].transform.position = Vector3.Lerp(allDice[i].transform.position, dicePositions[i], t);
-            allDice[i].transform.rotation = Quaternion.Slerp(allDice[i].transform.rotation, Quaternion.Euler(diceAngles[allDiceScripts[i].currentSide -1]),t * 5.0f);
+            allDice[i].transform.rotation = Quaternion.Slerp(allDice[i].transform.rotation, Quaternion.Euler(diceAngles[allDiceScripts[i].currentSide -1]),t * 2.0f);
+
+            if(Vector3.Distance(allDice[i].transform.position, dicePositions[i]) > 0.01){
+                diceMoveing = true;
+            }
         }
 
+        if (!diceMoveing) gameState = GameState.Select; 
+
+    }
+
+    private void SelectDice()
+    {
+        float t = Time.deltaTime * 25.0f;
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            Vector3 growScale = baseScale;
+            if (allDiceScripts[i].mouseState) growScale = Vector3.Scale(growScale, new Vector3(1.2f, 1.2f, 1.2f));
+            
+            allDice[i].transform.localScale = Vector3.Lerp(allDice[i].transform.localScale, growScale, t);
+            
+        }
     }
 
     IEnumerator SpawnDice(Action onComplete)
@@ -131,18 +175,13 @@ public class DiceManager : MonoBehaviour
             yield return new WaitForSeconds(throwSpeed);
         }
 
-
         onComplete?.Invoke();
 
     }
 
     private void onThrowComplete()
     {
-
         gameState = GameState.Wait;
-
-        
-
     }
 
 

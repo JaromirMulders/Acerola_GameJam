@@ -12,6 +12,8 @@ public class Dice : MonoBehaviour
     public List<GameObject> sideObjects = new List<GameObject>();
     private List<Renderer> sideRenderer = new List<Renderer>();
 
+    public bool mouseState = false;
+
     private Vector3[] sides =
     {
         new Vector3(0.0f, 1.0f, 0.0f),
@@ -49,8 +51,6 @@ public class Dice : MonoBehaviour
         
     }
 
-
-
     //from: https://forum.unity.com/threads/dice-which-face-is-up.10443/
     public void CheckSide()
     {
@@ -79,6 +79,14 @@ public class Dice : MonoBehaviour
         currentSide = result;
     }
 
+    private void OnMouseOver()
+    {
+        mouseState = true;
+    }
 
+    private void OnMouseExit()
+    {
+        mouseState = false; 
+    }
 
 }

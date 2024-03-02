@@ -613,12 +613,10 @@ MonoBehaviour:
   dice: {fileID: 2183355207357572847, guid: 446a97da0e8ae204988294b945873e02, type: 3}
   throwForce: 7.5
   rotForce: 5
-  throwAmount: 5
+  throwAmount: 8
   throwSpeed: 0.25
-  moveSpeed: 5
+  moveSpeed: 4
   allDice: []
-  dicePositions: []
-  allDiceScripts: []
   gameState: 0
 --- !u!1 &1797190244
 GameObject:

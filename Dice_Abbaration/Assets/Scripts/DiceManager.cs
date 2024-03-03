@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using System.Linq;
+using Unity.VisualScripting;
+using TMPro;
 
 public class DiceManager : MonoBehaviour
 {
@@ -13,12 +15,16 @@ public class DiceManager : MonoBehaviour
     public int throwAmount = 3;
     public float throwSpeed = 0.5f;
     public float moveSpeed = 1.0f;
+    public float diceDist = 1.0f;
+    private int selectedSide = 0;
 
     public List<GameObject> allDice = new List<GameObject>();
+    public List<GameObject> allSlots = new List<GameObject>();
     private List<Vector3> dicePositions = new List<Vector3>();
     private List<Dice> allDiceScripts = new List<Dice>();
 
-    private bool SetCollectFlag = false;
+    private bool setCollectFlag = false;
+    private bool setScoreFlag = false;
 
     private Vector3 baseScale = new Vector3(50.0f, 50.0f, 50.0f);
 
@@ -37,20 +43,18 @@ public class DiceManager : MonoBehaviour
         Throw,
         Wait,
         Collect,
-        Select
+        Select,
+        Score
     }
 
     public GameState gameState = GameState.Throw;
 
     void Start()
     {
-
     }
 
     void Update()
     {
-
-
         if(gameState == GameState.Throw)
         {
 
@@ -63,9 +67,14 @@ public class DiceManager : MonoBehaviour
         {
             CollectDice();
         
-        }else if (gameState == GameState.Select)
+        }
+        else if (gameState == GameState.Select)
         {
             SelectDice();
+        }
+        else if (gameState == GameState.Score)
+        {
+            Score();
         }
     }
 
@@ -83,12 +92,12 @@ public class DiceManager : MonoBehaviour
             if (allDiceScripts[i].isMoving) return;
         }
 
-        if(!SetCollectFlag) StartCoroutine(SetCollect());
+        if(!setCollectFlag) StartCoroutine(SetCollect());
     }
 
     private IEnumerator SetCollect()
     {
-        SetCollectFlag = true;
+        setCollectFlag = true;
 
         yield return new WaitForSeconds(1.0f);
 
@@ -101,7 +110,6 @@ public class DiceManager : MonoBehaviour
             allDiceScripts[i].CheckSide();
             diceValues.Add(allDiceScripts[i].currentSide);
 
-            dicePositions.Add(new Vector3(((float)(i % 8) / 7.0f * 2.0f - 1.0f) * 8.0f, 0.0f, 0.0f));
         }
 
         // Sort allDice and allDiceScripts based on diceValues
@@ -110,6 +118,20 @@ public class DiceManager : MonoBehaviour
 
         allDice = sortedDice;
         allDiceScripts = sortedDiceScripts;
+
+        float row = -6.0f;
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            if (allDiceScripts[i].currentSide - allDiceScripts[Math.Max(i - 1, 0)].currentSide != 0)
+            {
+                row = -6.0f;
+            }
+            row += diceDist;
+
+
+            dicePositions.Add(new Vector3(row, 0.0f, -allDiceScripts[i].currentSide * diceDist + 7.0f));
+        }
 
         gameState = GameState.Collect;
 
@@ -141,14 +163,80 @@ public class DiceManager : MonoBehaviour
     {
         float t = Time.deltaTime * 25.0f;
 
+        selectedSide = 0;
+
+        Vector3 growScale = Vector3.Scale(baseScale, new Vector3(1.2f, 1.2f, 1.2f));
+        Vector3 diceScale = Vector3.one;
+
         for (int i = 0; i < allDice.Count; i++)
         {
-            Vector3 growScale = baseScale;
-            if (allDiceScripts[i].mouseState) growScale = Vector3.Scale(growScale, new Vector3(1.2f, 1.2f, 1.2f));
-            
-            allDice[i].transform.localScale = Vector3.Lerp(allDice[i].transform.localScale, growScale, t);
-            
+            if (allDiceScripts[i].mouseState) selectedSide = allDiceScripts[i].currentSide;
         }
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            if (allDiceScripts[i].currentSide == selectedSide)
+            {
+                diceScale = growScale;
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    gameState = GameState.Score;
+                }
+            }
+            else
+            {
+                diceScale = baseScale;
+            }
+
+            allDice[i].transform.localScale = Vector3.Lerp(allDice[i].transform.localScale, diceScale, t);
+        }
+    }
+
+    private void Score()
+    {
+        if(!setScoreFlag) StartCoroutine(SlotDice());
+    }
+
+    IEnumerator SlotDice()
+    {
+        setScoreFlag = true;
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            if (allDiceScripts[i].currentSide == selectedSide)
+            {
+
+                StartCoroutine(MoveToSlot(allDice[i], allSlots[selectedSide-1].transform.position, moveSpeed));
+                
+                yield return new WaitForSeconds(throwSpeed);
+            }
+        }
+    }
+
+    IEnumerator MoveToSlot(GameObject gameObject, Vector3 targetPosition, float moveSpeed)
+    {
+        float randomDir = UnityEngine.Random.Range(0.5f, 1.0f) * moveSpeed * Time.deltaTime;
+        randomDir *= (float)(UnityEngine.Random.Range(0, 2) == 0 ? 1 : -1);
+
+        while (Vector3.Distance(gameObject.transform.position, targetPosition) > 0.01f)
+        {
+            gameObject.transform.eulerAngles = new Vector3(gameObject.transform.eulerAngles.x, gameObject.transform.eulerAngles.y + randomDir, gameObject.transform.eulerAngles.z);
+            gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, targetPosition, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        yield return StartCoroutine(ScaleToTarget(gameObject, Vector3.zero, moveSpeed));
+    }
+
+    IEnumerator ScaleToTarget(GameObject gameObject, Vector3 targetScale, float scaleSpeed)
+    {
+        while (Vector3.Distance(gameObject.transform.localScale, targetScale) > 0.01f)
+        {
+            gameObject.transform.localScale = Vector3.Lerp(gameObject.transform.localScale, targetScale, moveSpeed * Time.deltaTime);
+            yield return null;
+        }
+
     }
 
     IEnumerator SpawnDice(Action onComplete)
@@ -183,8 +271,6 @@ public class DiceManager : MonoBehaviour
     {
         gameState = GameState.Wait;
     }
-
-
 
 
 }

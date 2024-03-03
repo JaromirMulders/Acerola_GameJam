@@ -18,13 +18,21 @@ public class DiceManager : MonoBehaviour
     public float diceDist = 1.0f;
     private int selectedSide = 0;
 
+    public GameObject scoreNumber;
+
+    public Scoring scoring;
+
     public List<GameObject> allDice = new List<GameObject>();
-    public List<GameObject> allSlots = new List<GameObject>();
     private List<Vector3> dicePositions = new List<Vector3>();
     private List<Dice> allDiceScripts = new List<Dice>();
 
+    public List<GameObject> allSlots = new List<GameObject>();
+    private List<Slot> allSlotScripts = new List<Slot>();
+
+    private bool throwFlag = false;
     private bool setCollectFlag = false;
     private bool setScoreFlag = false;
+    private bool setClearFlag = false;
 
     private Vector3 baseScale = new Vector3(50.0f, 50.0f, 50.0f);
 
@@ -44,13 +52,18 @@ public class DiceManager : MonoBehaviour
         Wait,
         Collect,
         Select,
-        Score
+        Score,
+        Clear
     }
 
     public GameState gameState = GameState.Throw;
 
     void Start()
     {
+        for(int i = 0;i < allSlots.Count;i++)
+        {
+            allSlotScripts.Add(allSlots[i].GetComponent<Slot>());
+        }
     }
 
     void Update()
@@ -66,7 +79,6 @@ public class DiceManager : MonoBehaviour
         else if (gameState == GameState.Collect)
         {
             CollectDice();
-        
         }
         else if (gameState == GameState.Select)
         {
@@ -76,12 +88,21 @@ public class DiceManager : MonoBehaviour
         {
             Score();
         }
+        else if(gameState == GameState.Clear)
+        {
+            Clear();
+        }
+
     }
 
 
     public void ThrowDice()
     {
+        if (gameState != GameState.Throw || throwFlag == true) return;
+
         StartCoroutine(SpawnDice(onThrowComplete));
+
+        throwFlag = true;
     }
 
     private void WaitForMovement()
@@ -143,7 +164,6 @@ public class DiceManager : MonoBehaviour
 
         bool diceMoveing = false;
 
-
         //check if there are still dice rolling
         for (int i = 0; i < allDice.Count; i++)
         {
@@ -173,9 +193,11 @@ public class DiceManager : MonoBehaviour
             if (allDiceScripts[i].mouseState) selectedSide = allDiceScripts[i].currentSide;
         }
 
+
+
         for (int i = 0; i < allDice.Count; i++)
         {
-            if (allDiceScripts[i].currentSide == selectedSide)
+            if (allDiceScripts[i].currentSide == selectedSide && allSlotScripts[allDiceScripts[i].currentSide - 1].isSlotUsed == false )
             {
                 diceScale = growScale;
 
@@ -196,6 +218,83 @@ public class DiceManager : MonoBehaviour
     private void Score()
     {
         if(!setScoreFlag) StartCoroutine(SlotDice());
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            if (allDiceScripts[i].currentSide == selectedSide)
+            {
+                if (Vector3.Distance(allDice[i].transform.localScale, Vector3.zero) > 0.01f) return;
+            }
+        }
+        gameState = GameState.Clear;
+
+    }
+
+    private void Clear()
+    {
+        Vector3 targetPos = new Vector3(8.0f, 0.0f, 8.0f);
+
+        bool destroyFlag = true;
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            if (Vector3.Distance(allDice[i].transform.position, targetPos) > 0.01) destroyFlag = false;
+        }
+
+        if (destroyFlag){
+            Reset();
+            return;
+        }
+
+        if (setClearFlag) return;
+
+        allSlotScripts[selectedSide - 1].setSlotState(true);
+
+        for(int i = 0; i < allDice.Count; i++)
+        {
+            StartCoroutine(MoveToPosition(allDice[i], targetPos, moveSpeed));
+        }
+
+        setClearFlag = true;
+    }
+
+    private void Reset()
+    {
+        StopAllCoroutines();
+
+        allDiceScripts.Clear();
+        dicePositions.Clear();
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            GameObject dice = allDice[i];
+            allDice.Remove(dice);
+            Destroy(dice);
+        }
+
+        allDice.Clear();
+
+        setCollectFlag = false;
+        setScoreFlag = false;
+        setClearFlag = false;
+        throwFlag = false; 
+
+        selectedSide = 0;
+
+        gameState = GameState.Throw;
+    }
+
+    private void AddScore()
+    {
+        Vector3 slotPos = allSlots[selectedSide - 1].transform.position;
+        slotPos.y = 5.0f;
+        slotPos.x += -1.5f;
+
+        GameObject number = Instantiate(scoreNumber, slotPos, Quaternion.identity);
+        ScoreNumber numberScript = number.GetComponent<ScoreNumber>();
+        numberScript.textMeshPro.text = "+" + selectedSide.ToString();
+
+        scoring.AddScore(selectedSide);
     }
 
     IEnumerator SlotDice()
@@ -206,27 +305,33 @@ public class DiceManager : MonoBehaviour
         {
             if (allDiceScripts[i].currentSide == selectedSide)
             {
-
-                StartCoroutine(MoveToSlot(allDice[i], allSlots[selectedSide-1].transform.position, moveSpeed));
+                StartCoroutine(MoveToPosition(allDice[i], allSlots[selectedSide-1].transform.position, moveSpeed));
                 
                 yield return new WaitForSeconds(throwSpeed);
             }
         }
     }
 
-    IEnumerator MoveToSlot(GameObject gameObject, Vector3 targetPosition, float moveSpeed)
+    IEnumerator MoveToPosition(GameObject gameObject, Vector3 targetPosition, float moveSpeed)
     {
-        float randomDir = UnityEngine.Random.Range(0.5f, 1.0f) * moveSpeed * Time.deltaTime;
+        float randomDir = UnityEngine.Random.Range(0.5f, 1.0f) * moveSpeed*5.0f * Time.deltaTime;
         randomDir *= (float)(UnityEngine.Random.Range(0, 2) == 0 ? 1 : -1);
 
         while (Vector3.Distance(gameObject.transform.position, targetPosition) > 0.01f)
         {
             gameObject.transform.eulerAngles = new Vector3(gameObject.transform.eulerAngles.x, gameObject.transform.eulerAngles.y + randomDir, gameObject.transform.eulerAngles.z);
             gameObject.transform.position = Vector3.Lerp(gameObject.transform.position, targetPosition, moveSpeed * Time.deltaTime);
+
             yield return null;
         }
+        
+        if(gameState == GameState.Score)
+        {
+            AddScore();
+        }
 
-        yield return StartCoroutine(ScaleToTarget(gameObject, Vector3.zero, moveSpeed));
+        if(gameObject != null) yield return StartCoroutine(ScaleToTarget(gameObject, Vector3.zero, moveSpeed));
+
     }
 
     IEnumerator ScaleToTarget(GameObject gameObject, Vector3 targetScale, float scaleSpeed)

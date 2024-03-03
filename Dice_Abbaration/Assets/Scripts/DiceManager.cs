@@ -140,13 +140,14 @@ public class DiceManager : MonoBehaviour
         allDice = sortedDice;
         allDiceScripts = sortedDiceScripts;
 
-        float row = -6.0f;
+        float baseRowPos = allSlots[0].transform.position.x;
+        float row = baseRowPos;
 
         for (int i = 0; i < allDice.Count; i++)
         {
             if (allDiceScripts[i].currentSide - allDiceScripts[Math.Max(i - 1, 0)].currentSide != 0)
             {
-                row = -6.0f;
+                row = baseRowPos;
             }
             row += diceDist;
 

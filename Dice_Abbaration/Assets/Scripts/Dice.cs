@@ -10,7 +10,7 @@ public class Dice : MonoBehaviour
     public Texture[] sideTextures;
 
     public List<GameObject> sideObjects = new List<GameObject>();
-    private List<Renderer> sideRenderer = new List<Renderer>();
+    public int[] diceValues = { 1, 2, 3, 4, 5, 6 };
 
     public bool mouseState = false;
 
@@ -27,12 +27,6 @@ public class Dice : MonoBehaviour
     void Start()
     {
         rigidBody = GetComponent<Rigidbody>();
-
-        for(int i = 0; i < sideObjects.Count; i++)
-        {
-            sideRenderer.Add(sideObjects[i].GetComponent<Renderer>());
-            sideRenderer[i].material.mainTexture = sideTextures[i];
-        }
     }
 
     void Update()

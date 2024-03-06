@@ -10,6 +10,12 @@ using TMPro;
 public class DiceManager : MonoBehaviour
 {
     public GameObject dice;
+
+    public Deck deck;
+    public Scoring scoring;
+
+    public GameObject scoreNumber;
+
     public float throwForce = 10.0f;
     public float rotForce = 5.0f;
     public int throwAmount = 3;
@@ -18,9 +24,6 @@ public class DiceManager : MonoBehaviour
     public float diceDist = 1.0f;
     private int selectedSide = 0;
 
-    public GameObject scoreNumber;
-
-    public Scoring scoring;
 
     public List<GameObject> allDice = new List<GameObject>();
     private List<Vector3> dicePositions = new List<Vector3>();
@@ -95,10 +98,19 @@ public class DiceManager : MonoBehaviour
 
     }
 
+    public void NewStage()
+    {
+        for(int i =0; i < allSlots.Count; i++)
+        {
+            allSlotScripts[i].setSlotState(false);
+        }
+    }
 
     public void ThrowDice()
     {
         if (gameState != GameState.Throw || throwFlag == true) return;
+
+        scoring.SetCanScore(false);
 
         StartCoroutine(SpawnDice(onThrowComplete));
 
@@ -263,13 +275,14 @@ public class DiceManager : MonoBehaviour
     {
         StopAllCoroutines();
 
+        scoring.SetCanScore(true);
+
         allDiceScripts.Clear();
         dicePositions.Clear();
 
         for (int i = 0; i < allDice.Count; i++)
         {
             GameObject dice = allDice[i];
-            allDice.Remove(dice);
             Destroy(dice);
         }
 
@@ -285,7 +298,7 @@ public class DiceManager : MonoBehaviour
         gameState = GameState.Throw;
     }
 
-    private void AddScore()
+    private void AddScore(Dice dice)
     {
         Vector3 slotPos = allSlots[selectedSide - 1].transform.position;
         slotPos.y = 5.0f;
@@ -295,7 +308,7 @@ public class DiceManager : MonoBehaviour
         ScoreNumber numberScript = number.GetComponent<ScoreNumber>();
         numberScript.textMeshPro.text = "+" + selectedSide.ToString();
 
-        scoring.AddScore(selectedSide);
+        scoring.AddScore(dice.diceValues[selectedSide - 1]);
     }
 
     IEnumerator SlotDice()
@@ -328,7 +341,7 @@ public class DiceManager : MonoBehaviour
         
         if(gameState == GameState.Score)
         {
-            AddScore();
+            AddScore(gameObject.GetComponent<Dice>());
         }
 
         if(gameObject != null) yield return StartCoroutine(ScaleToTarget(gameObject, Vector3.zero, moveSpeed));
@@ -347,7 +360,8 @@ public class DiceManager : MonoBehaviour
 
     IEnumerator SpawnDice(Action onComplete)
     {
-        for (int i = 0; i < throwAmount; i++)
+
+        for (int i = 0; i < deck.diceDeck.Count; i++)
         {
             Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
 

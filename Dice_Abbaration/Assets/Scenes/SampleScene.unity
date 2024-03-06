@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dc5d5ddd4c1c004c88d001e0892ab04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSize: 1
+  startSize: 5
   diceDeck: []
 --- !u!4 &192032952
 Transform:

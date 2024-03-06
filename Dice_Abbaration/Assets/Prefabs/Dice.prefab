@@ -612,6 +612,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: diceNumber_1
       objectReference: {fileID: 0}
+    - target: {fileID: 5820453652504524090, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5820453652504524090, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5838649600489060169, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

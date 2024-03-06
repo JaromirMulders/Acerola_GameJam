@@ -41,6 +41,14 @@ public class Dice : MonoBehaviour
         {
             diceValues[i] = (i + 1);
 
+            sideObjects[i].GetComponent<TextMeshPro>().text = "";
+            Transform graphicsTransform = sideObjects[i].transform.Find("graphic");
+            GameObject graphicsObject = graphicsTransform.gameObject;
+            SpriteRenderer spriteRenderer = graphicsObject.GetComponent<SpriteRenderer>();
+            spriteRenderer.enabled = false;
+
+            Sprite sprite = Resources.Load<Sprite>(diceProps.sides[i].ToString());
+
             if (diceProps.sides[i] == DiceProps.Side.None)
             {
                 sideObjects[i].GetComponent<TextMeshPro>().text = diceValues[i].ToString();
@@ -49,6 +57,11 @@ public class Dice : MonoBehaviour
             {
                 sideObjects[i].GetComponent<TextMeshPro>().text = diceValues[i].ToString() + "+1";
                 diceValues[i] += 1;
+            }
+            else if (diceProps.sides[i] == DiceProps.Side.Area)
+            {
+                spriteRenderer.enabled = true;
+                spriteRenderer.sprite = sprite;
             }
 
         }

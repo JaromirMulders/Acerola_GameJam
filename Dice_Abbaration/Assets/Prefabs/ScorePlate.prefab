@@ -335,11 +335,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   growAmount: 1.05
-  spriteRenderer: {fileID: 6961066553388083905}
+  background: {fileID: 6961066553388083905}
+  boon: {fileID: 6099206165549543478}
   textMeshPro: {fileID: 8220598515061543762}
   canScore: 1
   gameManager: {fileID: 0}
   manager: {fileID: 0}
+  diceEditor: {fileID: 0}
   reward: 1
 --- !u!1 &6961066553388083935
 GameObject:

@@ -13,7 +13,8 @@ public class ScorePlate : MonoBehaviour
 
     public float growAmount = 1.1f;
 
-    public SpriteRenderer spriteRenderer;
+    public SpriteRenderer background;
+    public SpriteRenderer boon;
     public TextMeshPro textMeshPro;
 
     private int scoreToReach = 0;
@@ -42,11 +43,11 @@ public class ScorePlate : MonoBehaviour
 
         if(Global.score >= scoreToReach && canScore)
         {
-            spriteRenderer.color = Color.white;
+            background.color = Color.white;
         }
         else
         {
-            spriteRenderer.color = Color.grey;
+            background.color = Color.grey;
             return;
 
         }
@@ -72,11 +73,8 @@ public class ScorePlate : MonoBehaviour
             reward = Global.GetRandomEnum<DiceProps.Side>();
         }
 
-        if(reward == DiceProps.Side.AddOne)
-        {
-
-        }
-        Debug.Log(DiceProps.Side.AddOne.ToString());
+        Sprite sprite = Resources.Load<Sprite>(reward.ToString());
+        boon.sprite = sprite;
 
         diceEditor.editMode = reward;
         

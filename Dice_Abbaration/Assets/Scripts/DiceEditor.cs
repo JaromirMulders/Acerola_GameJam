@@ -15,7 +15,7 @@ public class DiceEditor : MonoBehaviour
 
     public List<GameObject> allDice = new List<GameObject>();
     private List<Vector3> dicePositions = new List<Vector3>();
-    private List<Dice> allDiceScripts = new List<Dice>();
+    public List<Dice> allDiceScripts = new List<Dice>();
 
     private bool diceThrown = false;
 
@@ -26,7 +26,7 @@ public class DiceEditor : MonoBehaviour
     private List<Vector3> randomRot = new List<Vector3>();
 
     private int selectedDice = 0;
-    private int selectedSide = 1;
+    private int selectedSide = 0;
 
     public DiceProps.Side editMode;
 
@@ -83,6 +83,7 @@ public class DiceEditor : MonoBehaviour
 
                 if (allDiceScripts[i].mouseState)
                 {
+
                     allDice[i].transform.localScale = Vector3.Lerp(allDice[i].transform.localScale, growScale, t);
                     if (Input.GetMouseButtonDown(0))
                     {
@@ -104,13 +105,8 @@ public class DiceEditor : MonoBehaviour
 
     public void EditDice()
     {
-
-        if(editMode == DiceProps.Side.AddOne)
-        {
-            Deck deckScript = deck.GetComponent<Deck>();
-            deckScript.diceDeck[selectedDice - 1].sides[selectedSide] = DiceProps.Side.AddOne;
-        }
-
+        Deck deckScript = deck.GetComponent<Deck>();
+        deckScript.diceDeck[selectedDice - 1].sides[selectedSide] = editMode;
     }
 
     public void SetDiceSide()
@@ -134,11 +130,18 @@ public class DiceEditor : MonoBehaviour
         for(int i = 0; i < allDice.Count; i++)
         {
             Destroy(allDice[i]);
-            Destroy(allDiceScripts[i]);
         }
+
         allDice.Clear();
+        allDiceScripts.Clear();
         dicePositions.Clear();
         randomRot.Clear();
+        
+
+        selectedDice = 0;
+        selectedSide = 0;
+
+        diceThrown = false;
     }
 
     public void ThrowDice()
@@ -150,11 +153,14 @@ public class DiceEditor : MonoBehaviour
             float del = (float)i/(deck.diceDeck.Count-1)  * 2.0f - 1.0f;
             del *= 3.0f;
             GameObject newDice = Instantiate(dice, new Vector3(del, 17.0f, 17.5f), Quaternion.identity);
+            Dice diceScript = newDice.GetComponent<Dice>();
 
             newDice.transform.parent = transform;
 
             allDice.Add(newDice);
-            allDiceScripts.Add(newDice.GetComponent<Dice>());
+            
+            allDiceScripts.Add(diceScript);
+            diceScript.AddProps(deck.diceDeck[i]);
 
             Rigidbody rb = newDice.GetComponent<Rigidbody>();
             rb.AddTorque(Global.Random3(new Vector2(10.0f, 360f)), ForceMode.Impulse);

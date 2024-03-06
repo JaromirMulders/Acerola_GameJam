@@ -338,6 +338,9 @@ MonoBehaviour:
   spriteRenderer: {fileID: 6961066553388083905}
   textMeshPro: {fileID: 8220598515061543762}
   canScore: 1
+  gameManager: {fileID: 0}
+  manager: {fileID: 0}
+  reward: 1
 --- !u!1 &6961066553388083935
 GameObject:
   m_ObjectHideFlags: 0

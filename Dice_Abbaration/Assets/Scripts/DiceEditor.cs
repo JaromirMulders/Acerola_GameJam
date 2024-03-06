@@ -26,7 +26,9 @@ public class DiceEditor : MonoBehaviour
     private List<Vector3> randomRot = new List<Vector3>();
 
     private int selectedDice = 0;
-    private int selectedSide = 0;
+    private int selectedSide = 1;
+
+    public DiceProps.Side editMode;
 
     private Vector3[] diceAngles =
 {
@@ -40,6 +42,8 @@ public class DiceEditor : MonoBehaviour
 
     void Start()
     {
+        editMode = DiceProps.Side.None;
+
         boxCollider = GetComponent<BoxCollider>();
     }
 
@@ -98,6 +102,17 @@ public class DiceEditor : MonoBehaviour
 
     }
 
+    public void EditDice()
+    {
+
+        if(editMode == DiceProps.Side.AddOne)
+        {
+            Deck deckScript = deck.GetComponent<Deck>();
+            deckScript.diceDeck[selectedDice - 1].sides[selectedSide] = DiceProps.Side.AddOne;
+        }
+
+    }
+
     public void SetDiceSide()
     {
         if (!Input.GetMouseButtonDown(0)) return;
@@ -151,7 +166,8 @@ public class DiceEditor : MonoBehaviour
 
     private Vector3 GetPosition(int i)
     {
-        float del = (float)i / (deck.diceDeck.Count - 1) * 2.0f - 1.0f;
+        int count = Mathf.Max(deck.diceDeck.Count - 1,1);
+        float del = (float)i / (float)count * 2.0f - 1.0f;
         del *= 4.0f;
 
         return new Vector3(del, 8.0f, 17.5f);

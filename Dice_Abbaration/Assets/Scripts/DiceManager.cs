@@ -306,9 +306,12 @@ public class DiceManager : MonoBehaviour
 
         GameObject number = Instantiate(scoreNumber, slotPos, Quaternion.identity);
         ScoreNumber numberScript = number.GetComponent<ScoreNumber>();
-        numberScript.textMeshPro.text = "+" + selectedSide.ToString();
 
-        scoring.AddScore(dice.diceValues[selectedSide - 1]);
+        int score = dice.diceValues[selectedSide - 1];
+
+        numberScript.textMeshPro.text = "+" + score.ToString();
+
+        scoring.AddScore(score);
     }
 
     IEnumerator SlotDice()
@@ -369,6 +372,7 @@ public class DiceManager : MonoBehaviour
 
             allDice.Add(newDice);
             allDiceScripts.Add(newDice.GetComponent<Dice>());
+            allDiceScripts[i].AddProps(deck.diceDeck[i]);
 
             newDice.transform.parent = transform;
 

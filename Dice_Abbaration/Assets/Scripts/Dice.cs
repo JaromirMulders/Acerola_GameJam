@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Dice : MonoBehaviour
@@ -32,6 +33,25 @@ public class Dice : MonoBehaviour
     void Update()
     {
         CheckThrow();
+    }
+
+    public void AddProps(DiceProps diceProps)
+    {
+        for(int i = 0; i < diceProps.sides.Count; i++)
+        {
+            diceValues[i] = (i + 1);
+
+            if (diceProps.sides[i] == DiceProps.Side.None)
+            {
+                sideObjects[i].GetComponent<TextMeshPro>().text = diceValues[i].ToString();
+            }
+            else if (diceProps.sides[i] == DiceProps.Side.AddOne)
+            {
+                sideObjects[i].GetComponent<TextMeshPro>().text = diceValues[i].ToString() + "+1";
+                diceValues[i] += 1;
+            }
+
+        }
     }
 
     void CheckThrow()

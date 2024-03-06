@@ -149,6 +149,7 @@ MonoBehaviour:
   - {fileID: 6093964431185897046}
   - {fileID: 469789613483953066}
   - {fileID: 3226755118888256963}
+  diceValues: 010000000200000003000000040000000500000006000000
   mouseState: 0
 --- !u!1001 &1675626201508601434
 PrefabInstance:
@@ -554,11 +555,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5838649600489060169, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5838649600489060169, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5838649600489060169, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
       propertyPath: m_LocalRotation.z
@@ -578,7 +579,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5838649600489060169, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 90
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 5838649600489060169, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z

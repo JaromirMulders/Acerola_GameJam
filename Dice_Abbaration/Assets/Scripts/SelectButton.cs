@@ -8,6 +8,7 @@ public class SelectButton : MonoBehaviour
     public GameManager gameManager;
     public GameObject graphic;
     public TextMeshPro textMeshPro;
+    public DiceEditor diceEditor;
 
     // Start is called before the first frame update
     void Start()
@@ -25,6 +26,7 @@ public class SelectButton : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            diceEditor.EditDice();
             gameManager.SetStageState(GameManager.StageState.Game);
         }
     }

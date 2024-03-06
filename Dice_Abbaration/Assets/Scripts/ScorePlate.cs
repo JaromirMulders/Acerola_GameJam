@@ -22,6 +22,9 @@ public class ScorePlate : MonoBehaviour
 
     public GameObject gameManager;
     public GameManager manager;
+    public DiceEditor diceEditor;
+
+    public DiceProps.Side reward;
 
     void Start()
     {
@@ -62,6 +65,21 @@ public class ScorePlate : MonoBehaviour
 
     public void SetScorePlates(int amount)
     {
+        DiceProps.Side reward = Global.GetRandomEnum<DiceProps.Side>();
+
+        while(reward == DiceProps.Side.None)
+        {
+            reward = Global.GetRandomEnum<DiceProps.Side>();
+        }
+
+        if(reward == DiceProps.Side.AddOne)
+        {
+
+        }
+        Debug.Log(DiceProps.Side.AddOne.ToString());
+
+        diceEditor.editMode = reward;
+        
         scoreToReach = amount;
         textMeshPro.text = amount.ToString();
     }

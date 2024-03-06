@@ -46,5 +46,13 @@ public static class Global
         return (((x - x_min) % (x_max - x_min)) + (x_max - x_min)) % (x_max - x_min) + x_min;
     }
 
+    //from: https://discussions.unity.com/t/enum-choose-random/18261
+    public static T GetRandomEnum<T>()
+    {
+        System.Array A = System.Enum.GetValues(typeof(T));
+        T V = (T)A.GetValue(UnityEngine.Random.Range(0, A.Length));
+        return V;
+    }
+
 
 }

@@ -201,7 +201,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9dc5d5ddd4c1c004c88d001e0892ab04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startSize: 5
+  startSize: 1
   diceDeck: []
 --- !u!4 &192032952
 Transform:
@@ -1253,6 +1253,7 @@ MonoBehaviour:
   allDice: []
   arrowLeft: {fileID: 690934564}
   arrowRight: {fileID: 1153879001}
+  editMode: 0
 --- !u!4 &1110433801
 Transform:
   m_ObjectHideFlags: 0
@@ -1334,6 +1335,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1283557030}
     m_Modifications:
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: manager
+      value: 
+      objectReference: {fileID: 183797358}
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: diceEditor
+      value: 
+      objectReference: {fileID: 1110433800}
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 183797356}
     - target: {fileID: 6099206165549543478, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -1860,6 +1873,7 @@ MonoBehaviour:
   gameManager: {fileID: 183797358}
   graphic: {fileID: 1257077272}
   textMeshPro: {fileID: 941022448}
+  diceEditor: {fileID: 1110433800}
 --- !u!54 &1377557617
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1924,6 +1938,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1283557030}
     m_Modifications:
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: manager
+      value: 
+      objectReference: {fileID: 183797358}
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: diceEditor
+      value: 
+      objectReference: {fileID: 1110433800}
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 183797356}
     - target: {fileID: 6961066553240914516, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
       propertyPath: m_Name
       value: ScorePlate
@@ -2693,9 +2719,21 @@ PrefabInstance:
     m_TransformParent: {fileID: 1283557030}
     m_Modifications:
     - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: manager
+      value: 
+      objectReference: {fileID: 183797358}
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: diceEditor
+      value: 
+      objectReference: {fileID: 1110433800}
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
       propertyPath: growAmount
       value: 1.1
       objectReference: {fileID: 0}
+    - target: {fileID: 2274328510685450184, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 183797356}
     - target: {fileID: 6099206165549543478, guid: 5db0fde6de1ee4346a4fc69f7a16b8f8, type: 3}
       propertyPath: m_Sprite
       value: 

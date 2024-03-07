@@ -6,6 +6,7 @@ using static UnityEngine.GraphicsBuffer;
 using System.Linq;
 using Unity.VisualScripting;
 using TMPro;
+using UnityEngine.UIElements;
 
 public class DiceManager : MonoBehaviour
 {
@@ -36,6 +37,7 @@ public class DiceManager : MonoBehaviour
     private bool setCollectFlag = false;
     private bool setScoreFlag = false;
     private bool setClearFlag = false;
+    private bool fxFlag = false;
 
     private Vector3 baseScale = new Vector3(50.0f, 50.0f, 50.0f);
 
@@ -54,6 +56,7 @@ public class DiceManager : MonoBehaviour
         Throw,
         Wait,
         Collect,
+        DiceFx,
         Select,
         Score,
         Clear
@@ -71,13 +74,17 @@ public class DiceManager : MonoBehaviour
 
     void Update()
     {
-        if(gameState == GameState.Throw)
+        if (gameState == GameState.Throw)
         {
 
         }
-        else if(gameState == GameState.Wait)
+        else if (gameState == GameState.Wait)
         {
             WaitForMovement();
+        }
+        else if (gameState == GameState.DiceFx)
+        {
+            DiceFx();
         }
         else if (gameState == GameState.Collect)
         {
@@ -91,7 +98,7 @@ public class DiceManager : MonoBehaviour
         {
             Score();
         }
-        else if(gameState == GameState.Clear)
+        else if (gameState == GameState.Clear)
         {
             Clear();
         }
@@ -167,9 +174,69 @@ public class DiceManager : MonoBehaviour
             dicePositions.Add(new Vector3(row, 0.0f, -allDiceScripts[i].currentSide * diceDist + 7.0f));
         }
 
+        gameState = GameState.DiceFx;
+
+    }
+
+    private void DiceFx()
+    {
+        if (fxFlag == true) return;
+
+        StartCoroutine(FX());
+    }
+
+    IEnumerator FX()
+    {
+        fxFlag = true;
+
+        List<Coroutine> FXs = new List<Coroutine>();
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            int side = allDiceScripts[i].currentSide - 1;
+
+            if (deck.diceDeck[i].sides[side] == DiceProps.Side.Area)
+            {
+                GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
+
+                fxDice.transform.Find("Ring").gameObject.SetActive(true);
+                FXs.Add(StartCoroutine(RingFx(fxDice)));    
+            }
+
+        }
+
+        // Wait for all coroutines to finish
+        foreach (Coroutine coroutine in FXs)
+        {
+            yield return coroutine;
+        }
+
+        //reset and go to next state
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            //allDice[i].transform.Find("Ring").gameObject.SetActive(false);
+        }
+
         gameState = GameState.Collect;
 
     }
+
+IEnumerator RingFx(GameObject gameObject)
+{
+    Ring ring = gameObject.transform.Find("Ring").GetComponent<Ring>();
+    
+    // Check for overlapping colliders within the sphere
+    Collider[] colliders = Physics.OverlapSphere(gameObject.transform.position, ring.radSize);
+
+    // Iterate through the colliders that overlap
+    foreach (Collider collider in colliders)
+    {
+        // Do something with the collider, for example, print its name
+        Debug.Log("Collider overlapped: " + collider.name);
+    }
+
+    yield return new WaitForSeconds(1.0f);
+}
 
     private void CollectDice()
     {
@@ -292,6 +359,7 @@ public class DiceManager : MonoBehaviour
         setScoreFlag = false;
         setClearFlag = false;
         throwFlag = false; 
+        fxFlag = false;
 
         selectedSide = 0;
 
@@ -369,6 +437,7 @@ public class DiceManager : MonoBehaviour
             Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
 
             GameObject newDice = Instantiate(dice, new Vector3(-7.0f, 5.0f, 0.0f), startRotation);
+            newDice.name = "Dice_" + i.ToString();
 
             allDice.Add(newDice);
             allDiceScripts.Add(newDice.GetComponent<Dice>());

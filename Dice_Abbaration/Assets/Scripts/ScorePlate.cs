@@ -66,7 +66,7 @@ public class ScorePlate : MonoBehaviour
 
     public void SetScorePlates(int amount)
     {
-        DiceProps.Side reward = Global.GetRandomEnum<DiceProps.Side>();
+        reward = Global.GetRandomEnum<DiceProps.Side>();
 
         while(reward == DiceProps.Side.None)
         {
@@ -76,7 +76,6 @@ public class ScorePlate : MonoBehaviour
         Sprite sprite = Resources.Load<Sprite>(reward.ToString());
         boon.sprite = sprite;
 
-        diceEditor.editMode = reward;
         
         scoreToReach = amount;
         textMeshPro.text = amount.ToString();
@@ -86,6 +85,7 @@ public class ScorePlate : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0) && Global.score >= scoreToReach && canScore)
         {
+            diceEditor.editMode = reward;
             manager.SetStageState(GameManager.StageState.EditDice);
         }
     }

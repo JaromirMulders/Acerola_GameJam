@@ -13,6 +13,7 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < startSize; i++)
         {
             DiceProps diceProps = ScriptableObject.CreateInstance<DiceProps>();
+            diceProps.name = "Dice_" + i.ToString();
             diceDeck.Add(diceProps);
         }
     }

@@ -28,7 +28,7 @@ public class DiceManager : MonoBehaviour
 
     public List<GameObject> allDice = new List<GameObject>();
     private List<Vector3> dicePositions = new List<Vector3>();
-    private List<Dice> allDiceScripts = new List<Dice>();
+    public List<Dice> allDiceScripts = new List<Dice>();
 
     public List<GameObject> allSlots = new List<GameObject>();
     private List<Slot> allSlotScripts = new List<Slot>();
@@ -139,7 +139,7 @@ public class DiceManager : MonoBehaviour
     {
         setCollectFlag = true;
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(1.5f);
 
         List<int> diceValues = new List<int>();
 
@@ -200,7 +200,9 @@ public class DiceManager : MonoBehaviour
                 GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
 
                 fxDice.transform.Find("Ring").gameObject.SetActive(true);
-                FXs.Add(StartCoroutine(RingFx(fxDice)));    
+                FXs.Add(StartCoroutine(RingFx(fxDice)));
+
+                yield return new WaitForSeconds(0.25f);
             }
 
         }
@@ -214,29 +216,41 @@ public class DiceManager : MonoBehaviour
         //reset and go to next state
         for (int i = 0; i < allDice.Count; i++)
         {
-            //allDice[i].transform.Find("Ring").gameObject.SetActive(false);
+            allDice[i].transform.Find("Ring").gameObject.SetActive(false);
         }
 
         gameState = GameState.Collect;
 
     }
 
-IEnumerator RingFx(GameObject gameObject)
-{
-    Ring ring = gameObject.transform.Find("Ring").GetComponent<Ring>();
-    
-    // Check for overlapping colliders within the sphere
-    Collider[] colliders = Physics.OverlapSphere(gameObject.transform.position, ring.radSize);
-
-    // Iterate through the colliders that overlap
-    foreach (Collider collider in colliders)
+    IEnumerator RingFx(GameObject gameObject)
     {
-        // Do something with the collider, for example, print its name
-        Debug.Log("Collider overlapped: " + collider.name);
-    }
+        Dice currentDiceScript = gameObject.GetComponent<Dice>();
 
-    yield return new WaitForSeconds(1.0f);
-}
+        Ring ring = gameObject.transform.Find("Ring").GetComponent<Ring>();
+    
+        Collider[] colliders = Physics.OverlapSphere(gameObject.transform.position, ring.radSize);
+
+        int side = currentDiceScript.currentSide - 1;
+
+        foreach (Collider collider in colliders)
+        {
+            GameObject diceObj = collider.gameObject;
+            Dice diceScript = diceObj.GetComponent<Dice>();
+
+            if (diceObj.name == gameObject.name) continue;
+
+            if(diceScript != null)
+            {
+                int otherDiceSide = diceScript.currentSide - 1;
+                currentDiceScript.diceValues[side] += diceScript.diceValues[otherDiceSide];
+            }
+        }
+
+        currentDiceScript.SetText(side, currentDiceScript.diceValues[side].ToString());
+
+        yield return new WaitForSeconds(1.0f);
+    }
 
     private void CollectDice()
     {
@@ -272,7 +286,6 @@ IEnumerator RingFx(GameObject gameObject)
         {
             if (allDiceScripts[i].mouseState) selectedSide = allDiceScripts[i].currentSide;
         }
-
 
 
         for (int i = 0; i < allDice.Count; i++)

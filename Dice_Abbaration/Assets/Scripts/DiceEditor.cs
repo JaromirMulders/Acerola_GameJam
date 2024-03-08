@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static DiceManager;
 
 public class DiceEditor : MonoBehaviour
 {
@@ -12,6 +10,7 @@ public class DiceEditor : MonoBehaviour
     public GameObject dice;
     public Deck deck;
     public GameObject editSlot;
+    public SpriteRenderer editIcon;
 
     public List<GameObject> allDice = new List<GameObject>();
     private List<Vector3> dicePositions = new List<Vector3>();
@@ -55,6 +54,8 @@ public class DiceEditor : MonoBehaviour
             diceThrown = false;
             return;
         }
+            
+        editIcon.sprite = Resources.Load<Sprite>(editMode.ToString());
 
         boxCollider.enabled = true;
 

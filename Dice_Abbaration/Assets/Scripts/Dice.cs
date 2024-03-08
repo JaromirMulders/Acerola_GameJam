@@ -68,15 +68,35 @@ public class Dice : MonoBehaviour
         }
     }
 
+    public void SetText(int id, string text)
+    {
+        sideObjects[id].GetComponent<TextMeshPro>().text = "";
+        Transform graphicsTransform = sideObjects[id].transform.Find("graphic");
+        GameObject graphicsObject = graphicsTransform.gameObject;
+        SpriteRenderer spriteRenderer = graphicsObject.GetComponent<SpriteRenderer>();
+        spriteRenderer.enabled = false;
+
+        sideObjects[id].GetComponent<TextMeshPro>().text = text;
+
+    }
+
     void CheckThrow()
     {
         if (!isMoving) return;
 
+        //add slight delay so dice dont stop when they are still tilted
         if (rigidBody.velocity == Vector3.zero && rigidBody.angularVelocity == Vector3.zero)
         {
-            isMoving = false;
+            StartCoroutine(CheckStillMoving());
         }
-        
+    }
+
+    IEnumerator CheckStillMoving()
+    {
+        yield return new WaitForSeconds(0.1f); 
+
+        if (rigidBody.velocity == Vector3.zero && rigidBody.angularVelocity == Vector3.zero) isMoving = false;
+
     }
 
     //from: https://forum.unity.com/threads/dice-which-face-is-up.10443/

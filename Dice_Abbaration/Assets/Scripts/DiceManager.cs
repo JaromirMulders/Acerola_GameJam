@@ -10,6 +10,8 @@ using UnityEngine.UIElements;
 
 public class DiceManager : MonoBehaviour
 {
+    public GameManager gameManager;
+
     public GameObject dice;
 
     public Deck deck;
@@ -258,6 +260,8 @@ public class DiceManager : MonoBehaviour
 
         bool diceMoveing = false;
 
+        int possibleCount = 0;
+
         //check if there are still dice rolling
         for (int i = 0; i < allDice.Count; i++)
         {
@@ -267,10 +271,30 @@ public class DiceManager : MonoBehaviour
             if(Vector3.Distance(allDice[i].transform.position, dicePositions[i]) > 0.01){
                 diceMoveing = true;
             }
+
+            if (allSlotScripts[allDiceScripts[i].currentSide - 1].isSlotUsed == false)
+            {
+                possibleCount++;
+            }
+
         }
+
+        if (possibleCount == 0) StartCoroutine(GameOver());
 
         if (!diceMoveing) gameState = GameState.Select; 
 
+    }
+
+    IEnumerator GameOver()
+    {
+        GameObject.Find("GameOver").transform.GetChild(0).gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(2.0f);
+
+        Reset();
+        deck.Reset();
+
+        gameManager.GameOver();
     }
 
     private void SelectDice()
@@ -279,6 +303,7 @@ public class DiceManager : MonoBehaviour
 
         selectedSide = 0;
 
+
         Vector3 growScale = Vector3.Scale(baseScale, new Vector3(1.2f, 1.2f, 1.2f));
         Vector3 diceScale = Vector3.one;
 
@@ -286,7 +311,6 @@ public class DiceManager : MonoBehaviour
         {
             if (allDiceScripts[i].mouseState) selectedSide = allDiceScripts[i].currentSide;
         }
-
 
         for (int i = 0; i < allDice.Count; i++)
         {
@@ -306,6 +330,7 @@ public class DiceManager : MonoBehaviour
 
             allDice[i].transform.localScale = Vector3.Lerp(allDice[i].transform.localScale, diceScale, t);
         }
+
     }
 
     private void Score()

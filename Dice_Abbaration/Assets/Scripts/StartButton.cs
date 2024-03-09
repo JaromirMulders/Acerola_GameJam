@@ -31,7 +31,6 @@ public class StartButton : MonoBehaviour
             if (buttonType == ButtonType.Start)
             {
                 gameManager.SetStageState(GameManager.StageState.Game);
-                Debug.Log("test");
             }
         }
 

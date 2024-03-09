@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
 
         if (stageState == StageState.StartScreen)
         {
+            Global.stage = 0;
+            GameObject.Find("GameOver").transform.GetChild(0).gameObject.SetActive(false);
             StartCoroutine(RotateTo(cameraObj, cameraObj.transform.eulerAngles, new Vector3(-180.0f, 0.0f, 0.0f), 2.0f));
             Physics.gravity = new Vector3(0, 9.81f, 0); // Reverse gravity
         }
@@ -60,6 +62,11 @@ public class GameManager : MonoBehaviour
         diceEditor.Reset();
         diceManager.NewStage();
         scoring.NewStage();
+    }
+
+    public void GameOver()
+    {
+        SetStageState(StageState.StartScreen);
     }
 
     IEnumerator RotateTo(GameObject gameObject, Vector3 basePos, Vector3 target, float duration, Action action = null)

@@ -18,6 +18,18 @@ public class Deck : MonoBehaviour
         }
     }
 
+    public void Reset()
+    {
+        diceDeck.Clear();
+
+        for (int i = 0; i < startSize; i++)
+        {
+            DiceProps diceProps = ScriptableObject.CreateInstance<DiceProps>();
+            diceProps.name = "Dice_" + i.ToString();
+            diceDeck.Add(diceProps);
+        }
+    }
+
     void Update()
     {
         

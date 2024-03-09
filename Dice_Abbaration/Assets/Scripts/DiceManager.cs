@@ -139,7 +139,7 @@ public class DiceManager : MonoBehaviour
     {
         setCollectFlag = true;
 
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.0f);
 
         List<int> diceValues = new List<int>();
 
@@ -193,7 +193,7 @@ public class DiceManager : MonoBehaviour
 
         for (int i = 0; i < allDice.Count; i++)
         {
-            int side = allDiceScripts[i].currentSide - 1;
+            int side = GameObject.Find("Dice_" + i.ToString()).GetComponent<Dice>().currentSide - 1;
 
             if (deck.diceDeck[i].sides[side] == DiceProps.Side.Area)
             {

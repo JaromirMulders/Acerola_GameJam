@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
 
     public enum StageState
     {
+        StartScreen,
         Game,
         Pause,
         EditDice
@@ -22,7 +23,9 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        stageState = StageState.Game;
+        stageState = StageState.StartScreen;
+        if (stageState == StageState.StartScreen) Physics.gravity = new Vector3(0, 9.81f, 0); // Reverse gravity
+
     }
 
 
@@ -30,10 +33,16 @@ public class GameManager : MonoBehaviour
     {
         stageState = state;
 
-        if(stageState == StageState.Game)
+        if (stageState == StageState.StartScreen)
+        {
+            StartCoroutine(RotateTo(cameraObj, cameraObj.transform.eulerAngles, new Vector3(-180.0f, 0.0f, 0.0f), 2.0f));
+            Physics.gravity = new Vector3(0, 9.81f, 0); // Reverse gravity
+        }
+        if (stageState == StageState.Game)
         {
             Action reset = () => ResetEditDice();
             StartCoroutine(RotateTo(cameraObj, cameraObj.transform.eulerAngles, new Vector3(90.0f,0.0f,0.0f), 2.0f, reset));
+            Physics.gravity = new Vector3(0, -9.81f, 0);
         }
         else if(stageState == StageState.Pause)
         {
@@ -42,6 +51,7 @@ public class GameManager : MonoBehaviour
         else if(stageState == StageState.EditDice)
         {
             StartCoroutine(RotateTo(cameraObj,cameraObj.transform.eulerAngles,Vector3.zero, 2.0f));
+            Physics.gravity = new Vector3(0, -9.81f, 0);
         }
     }
 

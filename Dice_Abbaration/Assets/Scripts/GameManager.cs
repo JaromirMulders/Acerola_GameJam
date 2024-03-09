@@ -37,6 +37,8 @@ public class GameManager : MonoBehaviour
         {
             Global.stage = 0;
             GameObject.Find("GameOver").transform.GetChild(0).gameObject.SetActive(false);
+            GameObject.Find("Win").transform.GetChild(0).gameObject.SetActive(false);
+
             StartCoroutine(RotateTo(cameraObj, cameraObj.transform.eulerAngles, new Vector3(-180.0f, 0.0f, 0.0f), 2.0f));
             Physics.gravity = new Vector3(0, 9.81f, 0); // Reverse gravity
         }

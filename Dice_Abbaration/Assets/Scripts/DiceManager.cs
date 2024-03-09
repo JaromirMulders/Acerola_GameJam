@@ -297,6 +297,23 @@ public class DiceManager : MonoBehaviour
         gameManager.GameOver();
     }
 
+    public void WinState()
+    {
+        StartCoroutine(Win());
+    }
+
+    IEnumerator Win()
+    {
+        GameObject.Find("Win").transform.GetChild(0).gameObject.SetActive(true);
+
+        yield return new WaitForSeconds(2.0f);
+
+        Reset();
+        deck.Reset();
+
+        gameManager.GameOver();
+    }
+
     private void SelectDice()
     {
         float t = Time.deltaTime * 25.0f;

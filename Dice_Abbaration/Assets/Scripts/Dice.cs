@@ -18,6 +18,10 @@ public class Dice : MonoBehaviour
 
     public bool mouseState = false;
 
+    public int diceCollisionAmount = 0;
+
+    private DiceProps myDiceProps;
+
     private Vector3[] sides =
     {
         new Vector3(0.0f, 1.0f, 0.0f),
@@ -41,6 +45,8 @@ public class Dice : MonoBehaviour
 
     public void AddProps(DiceProps diceProps)
     {
+        myDiceProps = diceProps;
+
         for(int i = 0; i < diceProps.sides.Count; i++)
         {
             diceValues[i] = (i + 1);
@@ -77,6 +83,11 @@ public class Dice : MonoBehaviour
                 spriteRenderer.enabled = true;
                 spriteRenderer.sprite = sprite;
             }
+            else if (diceProps.sides[i] == DiceProps.Side.Touch)
+            {
+                spriteRenderer.enabled = true;
+                spriteRenderer.sprite = sprite;
+            }
 
 
 
@@ -89,7 +100,9 @@ public class Dice : MonoBehaviour
         Transform graphicsTransform = sideObjects[id].transform.Find("graphic");
         GameObject graphicsObject = graphicsTransform.gameObject;
         SpriteRenderer spriteRenderer = graphicsObject.GetComponent<SpriteRenderer>();
-        spriteRenderer.enabled = false;
+        spriteRenderer.color = new Color(1.0f,1.0f,1.0f,0.7f);
+        
+        //spriteRenderer.enabled = false;
 
         sideObjects[id].GetComponent<TextMeshPro>().text = text;
 
@@ -152,6 +165,26 @@ public class Dice : MonoBehaviour
         mouseState = false; 
     }
 
+    void OnCollisionEnter(Collision collision)
+    {
+        GameObject collisionObj = collision.gameObject;
+        
+        if (collisionObj.GetComponent<Dice>() != null){
+
+            diceCollisionAmount++;
+
+            if (myDiceProps == null) return;
+
+            for (int i = 0; i < myDiceProps.sides.Count; i++)
+            {
+                if (myDiceProps.sides[i] == DiceProps.Side.Touch)
+                {
+                    diceValues[i] += diceCollisionAmount;
+                    SetText(i, diceValues[i].ToString());
+                }
+            }
+        }
+    }
 
 
 }

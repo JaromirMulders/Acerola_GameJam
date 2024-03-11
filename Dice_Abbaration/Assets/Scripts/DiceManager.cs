@@ -216,7 +216,7 @@ public class DiceManager : MonoBehaviour
 
             if(deck.diceDeck[i].sides[side] != DiceProps.Side.None)
             {
-                float duration = 0.2f;  // Duration in seconds
+                float duration = 0.2f;  
                 float timer = 0.0f;
 
                 while (timer < duration)
@@ -352,7 +352,7 @@ public class DiceManager : MonoBehaviour
 
             Vector3 pullDirection = gameObject.transform.position - diceObj.transform.position;
 
-            float pullForce = 35.0f;
+            float pullForce = 25.0f;
             rb.AddForce(pullDirection.normalized * pullForce, ForceMode.Impulse);
 
         }

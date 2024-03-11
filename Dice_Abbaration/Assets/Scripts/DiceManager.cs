@@ -41,6 +41,7 @@ public class DiceManager : MonoBehaviour
     private bool setScoreFlag = false;
     private bool setClearFlag = false;
     private bool fxFlag = false;
+    private bool addDiceFlag = false;
 
     private Vector3 baseScale = new Vector3(50.0f, 50.0f, 50.0f);
 
@@ -320,6 +321,8 @@ public class DiceManager : MonoBehaviour
 
     private void SelectDice()
     {
+        addDiceFlag = false;
+
         float t = Time.deltaTime * 25.0f;
 
         selectedSide = 0;
@@ -329,7 +332,7 @@ public class DiceManager : MonoBehaviour
         Vector3 growScale = Vector3.Scale(baseScale, new Vector3(1.2f, 1.2f, 1.2f));
         Vector3 diceScale = Vector3.one;
 
-        for (int i = 0; i < allDice.Count; i++)
+        for (int i = 0; i < allDiceScripts.Count; i++)
         {
             if (allDiceScripts[i].mouseState) selectedSide = allDiceScripts[i].currentSide;
         }
@@ -343,13 +346,11 @@ public class DiceManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < allDice.Count; i++)
+        for (int i = 0; i < allDiceScripts.Count; i++)
         {
             if (allDiceScripts[i].currentSide == selectedSide && allSlotScripts[allDiceScripts[i].currentSide - 1].isSlotUsed == false )
             {
                 diceScale = growScale;
-
-
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -366,11 +367,44 @@ public class DiceManager : MonoBehaviour
 
     }
 
+    public void AddDiceRoutine()
+    {
+        StartCoroutine(AddDice());
+    }
+
+    IEnumerator AddDice()
+    {
+
+
+        Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
+
+        GameObject newDice = Instantiate(dice, new Vector3(-7.0f, 5.0f, 0.0f), startRotation);
+        newDice.name = "Dice_" + allDice.Count.ToString();
+
+        newDice.transform.parent = transform;
+
+        Rigidbody diceBody = newDice.GetComponent<Rigidbody>();
+
+        Vector3 throwDir = new Vector3(UnityEngine.Random.Range(1.0f, 2.0f), -0.5f, UnityEngine.Random.Range(-1.0f, 1.0f));
+        diceBody.AddForce(throwDir * throwForce, ForceMode.Impulse);
+        Vector3 rotDir = Global.Random3(new Vector2(10.0f, 360f));
+        diceBody.AddTorque(rotDir * rotForce, ForceMode.Impulse);
+
+        allDice.Add(newDice);
+
+        yield return new WaitForSeconds(2.0f);
+
+        addDiceFlag = true;
+        selectedSide = addDice.requiredDice + 1;
+        gameState = GameState.Score;
+
+    }
+
     private void Score()
     {
         if(!setScoreFlag) StartCoroutine(SlotDice());
 
-        for (int i = 0; i < allDice.Count; i++)
+        for (int i = 0; i < allDiceScripts.Count; i++)
         {
             if (allDiceScripts[i].currentSide == selectedSide)
             {
@@ -387,10 +421,11 @@ public class DiceManager : MonoBehaviour
 
         bool destroyFlag = true;
 
-        for (int i = 0; i < allDice.Count; i++)
+        for (int i = 0; i < allDiceScripts.Count; i++)
         {
             if (Vector3.Distance(allDice[i].transform.position, targetPos) > 0.01) destroyFlag = false;
         }
+
 
         addDice.SetAvailible(false);
 
@@ -402,7 +437,15 @@ public class DiceManager : MonoBehaviour
 
         if (setClearFlag) return;
 
-        allSlotScripts[selectedSide - 1].setSlotState(true);
+        if (addDiceFlag)
+        {
+            allSlotScripts[6].setSlotState(true);
+        }
+        else
+        {
+            allSlotScripts[selectedSide - 1].setSlotState(true);
+        }
+
 
         for(int i = 0; i < allDice.Count; i++)
         {
@@ -465,15 +508,23 @@ public class DiceManager : MonoBehaviour
     {
         setScoreFlag = true;
 
-        for (int i = 0; i < allDice.Count; i++)
+        for (int i = 0; i < allDiceScripts.Count; i++)
         {
             if (allDiceScripts[i].currentSide == selectedSide)
             {
-                StartCoroutine(MoveToPosition(allDice[i], allSlots[selectedSide-1].transform.position, moveSpeed));
-                
+                if (addDiceFlag)
+                {
+                    StartCoroutine(MoveToPosition(allDice[i], allSlots[6].transform.position, moveSpeed));
+                }
+                else
+                {
+                    StartCoroutine(MoveToPosition(allDice[i], allSlots[selectedSide - 1].transform.position, moveSpeed));
+                }
+
                 yield return new WaitForSeconds(throwSpeed);
             }
         }
+        
     }
 
     IEnumerator MoveToPosition(GameObject gameObject, Vector3 targetPosition, float moveSpeed)

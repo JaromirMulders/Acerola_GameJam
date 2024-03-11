@@ -8,6 +8,7 @@ public class AddDice : MonoBehaviour
     public TextMeshPro textMeshPro;
     public SpriteRenderer addDiceButton;
     public Deck deck;
+    public DiceManager diceManager;
 
     public int requiredDice = 0;
     public int requiredAmount = 2;
@@ -59,7 +60,7 @@ public class AddDice : MonoBehaviour
         {
             deck.AddDice();
             isUsed = true;
-            slot.setSlotState(true);
+            diceManager.AddDiceRoutine();
         }
     }
 

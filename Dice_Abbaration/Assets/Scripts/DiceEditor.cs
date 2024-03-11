@@ -11,6 +11,7 @@ public class DiceEditor : MonoBehaviour
     public Deck deck;
     public GameObject editSlot;
     public SpriteRenderer editIcon;
+    public SelectButton selectButton;
 
     public List<GameObject> allDice = new List<GameObject>();
     private List<Vector3> dicePositions = new List<Vector3>();
@@ -134,7 +135,7 @@ public class DiceEditor : MonoBehaviour
     IEnumerator EditDiceFx()
     {
         float distort = 0.0f;
-        float duration = 1.0f;
+        float duration = 0.5f;
         float startTime = Time.time;
         float endTime = startTime + duration;
 
@@ -170,8 +171,6 @@ public class DiceEditor : MonoBehaviour
 
         yield return new WaitForSeconds(0.5f);
 
-
-
         manager.SetStageState(GameManager.StageState.Game);
 
         yield return null;
@@ -201,6 +200,8 @@ public class DiceEditor : MonoBehaviour
         {
             Destroy(allDice[i]);
         }
+
+        selectButton.editFlag = false;
 
         allDice.Clear();
         allDiceScripts.Clear();

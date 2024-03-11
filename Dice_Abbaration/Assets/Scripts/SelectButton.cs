@@ -10,6 +10,8 @@ public class SelectButton : MonoBehaviour
     public TextMeshPro textMeshPro;
     public DiceEditor diceEditor;
 
+    public bool editFlag = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,9 +26,11 @@ public class SelectButton : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && !editFlag)
         {
             diceEditor.EditDice();
+
+            editFlag = true;
         }
     }
 }

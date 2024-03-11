@@ -22,7 +22,9 @@ public class ScorePlate : MonoBehaviour
     public bool canScore = true;
 
     public GameObject gameManager;
+    public GameObject diceManager;
     public GameManager manager;
+    public DiceManager diceManagerScript;
     public DiceEditor diceEditor;
 
     public DiceProps.Side reward;
@@ -35,6 +37,9 @@ public class ScorePlate : MonoBehaviour
 
         gameManager = GameObject.Find("GameManager");
         manager = gameManager.GetComponent<GameManager>();
+
+        diceManager = GameObject.Find("DiceManager");
+        diceManagerScript = diceManager.GetComponent<DiceManager>();
     }
 
     void Update()
@@ -42,7 +47,7 @@ public class ScorePlate : MonoBehaviour
         float t = 10.0f * Time.deltaTime;
 
 
-        if (Global.score >= scoreToReach && canScore)
+        if (Global.score >= scoreToReach && canScore && diceManagerScript.gameState == DiceManager.GameState.Throw)
         {
             background.color = Color.white;
         }
@@ -84,7 +89,7 @@ public class ScorePlate : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if(Input.GetMouseButtonDown(0) && Global.score >= scoreToReach && canScore)
+        if(Input.GetMouseButtonDown(0) && Global.score >= scoreToReach && canScore && diceManagerScript.gameState == DiceManager.GameState.Throw)
         {
             diceEditor.editMode = reward;
             manager.SetStageState(GameManager.StageState.EditDice);

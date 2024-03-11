@@ -61,6 +61,7 @@ public class AddDice : MonoBehaviour
             deck.AddDice();
             isUsed = true;
             diceManager.AddDiceRoutine();
+            requiredAmount++;
         }
     }
 

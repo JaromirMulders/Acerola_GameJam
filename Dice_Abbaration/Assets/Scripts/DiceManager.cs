@@ -30,7 +30,7 @@ public class DiceManager : MonoBehaviour
 
 
     public List<GameObject> allDice = new List<GameObject>();
-    private List<Vector3> dicePositions = new List<Vector3>();
+    public List<Vector3> dicePositions = new List<Vector3>();
     public List<Dice> allDiceScripts = new List<Dice>();
 
     public List<GameObject> allSlots = new List<GameObject>();
@@ -147,6 +147,14 @@ public class DiceManager : MonoBehaviour
 
         yield return new WaitForSeconds(1.0f);
 
+        SetDicePosition();
+
+        gameState = GameState.DiceFx;
+
+    }
+
+    public void SetDicePosition()
+    {
         List<int> diceValues = new List<int>();
 
         for (int i = 0; i < allDice.Count; i++)
@@ -180,9 +188,6 @@ public class DiceManager : MonoBehaviour
 
             dicePositions.Add(new Vector3(row, 0.0f, -allDiceScripts[i].currentSide * diceDist + 7.0f));
         }
-
-        gameState = GameState.DiceFx;
-
     }
 
     private void DiceFx()
@@ -198,20 +203,33 @@ public class DiceManager : MonoBehaviour
 
         List<Coroutine> FXs = new List<Coroutine>();
 
-        for (int i = 0; i < allDice.Count; i++)
+        for (int i = 0; i < allDiceScripts.Count; i++)
         {
+            Dice diceScript = GameObject.Find("Dice_" + i).GetComponent<Dice>();
+
+            if (diceScript.skipFX) continue;
+
             int side = GameObject.Find("Dice_" + i.ToString()).GetComponent<Dice>().currentSide - 1;
 
             if (deck.diceDeck[i].sides[side] == DiceProps.Side.Area)
             {
                 GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
-
                 fxDice.transform.Find("Ring").gameObject.SetActive(true);
-                FXs.Add(StartCoroutine(RingFx(fxDice)));
 
-                yield return new WaitForSeconds(0.25f);
+                Coroutine ringCoroutine = StartCoroutine(RingFx(fxDice));
+                FXs.Add(ringCoroutine);
+
+                yield return ringCoroutine;
             }
+            else if (deck.diceDeck[i].sides[side] == DiceProps.Side.AddDice)
+            {
+                GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
 
+                Coroutine addDiceCoroutine = StartCoroutine(AddDiceFX());
+                FXs.Add(addDiceCoroutine);
+
+                yield return addDiceCoroutine;
+            }
         }
 
         // Wait for all coroutines to finish
@@ -227,7 +245,49 @@ public class DiceManager : MonoBehaviour
         }
 
         gameState = GameState.Collect;
+    }
 
+    IEnumerator AddDiceFX()
+    {
+        Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
+
+        GameObject newDice = Instantiate(dice, new Vector3(-7.0f, 5.0f, 0.0f), startRotation);
+        newDice.name = "Dice_" + (allDice.Count).ToString();
+
+        allDice.Add(newDice);
+        Dice diceScript = newDice.GetComponent<Dice>();
+        diceScript.skipFX = true;
+
+        allDiceScripts.Add(diceScript);
+
+        DiceProps diceProps = ScriptableObject.CreateInstance<DiceProps>();
+
+        diceScript.AddProps(diceProps);
+
+        newDice.transform.parent = transform;
+
+        Rigidbody diceBody = newDice.GetComponent<Rigidbody>();
+
+        Vector3 throwDir = new Vector3(UnityEngine.Random.Range(1.0f, 2.0f), -0.5f, UnityEngine.Random.Range(-1.0f, 1.0f));
+        diceBody.AddForce(throwDir * throwForce, ForceMode.Impulse);
+        Vector3 rotDir = Global.Random3(new Vector2(10.0f, 360f));
+        diceBody.AddTorque(rotDir * rotForce, ForceMode.Impulse);
+
+
+        while(allDiceScripts[allDiceScripts.Count - 1].isMoving)
+        {
+            yield return null;
+        }
+
+        for(int i = 0; i < amountOfDice.Length; i++)
+        {
+            amountOfDice[i] = 0;
+        }
+        dicePositions.Clear();
+
+        SetDicePosition();
+
+        yield return new WaitForSeconds(0.5f);
     }
 
     IEnumerator RingFx(GameObject gameObject)
@@ -256,7 +316,7 @@ public class DiceManager : MonoBehaviour
 
         currentDiceScript.SetText(side, currentDiceScript.diceValues[side].ToString());
 
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(0.5f);
     }
 
     private void CollectDice()
@@ -267,7 +327,6 @@ public class DiceManager : MonoBehaviour
 
         int possibleCount = 0;
 
-        //check if there are still dice rolling
         for (int i = 0; i < allDice.Count; i++)
         {
             allDice[i].transform.position = Vector3.Lerp(allDice[i].transform.position, dicePositions[i], t);
@@ -339,8 +398,8 @@ public class DiceManager : MonoBehaviour
 
         for (int i = 0; i < amountOfDice.Length; i++)
         {
-            //if (amountOfDice[i] == addDice.requiredAmount && i == addDice.requiredDice && addDice.isUsed == false)
-            if (amountOfDice[i] >= addDice.requiredAmount && addDice.isUsed == false)
+            if ((amountOfDice[i] >= addDice.requiredAmount) && (i == addDice.requiredDice) && (addDice.isUsed == false))
+            //if (amountOfDice[i] >= addDice.requiredAmount && addDice.isUsed == false)
             {
                 addDice.SetAvailible(true);
             }
@@ -542,7 +601,7 @@ public class DiceManager : MonoBehaviour
         
         if(gameState == GameState.Score)
         {
-            AddScore(gameObject.GetComponent<Dice>());
+            if(!addDiceFlag) AddScore(gameObject.GetComponent<Dice>());
         }
 
         if(gameObject != null) yield return StartCoroutine(ScaleToTarget(gameObject, Vector3.zero, moveSpeed));

@@ -2605,11 +2605,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manager: {fileID: 183797358}
-  diceManager: {fileID: 0}
+  diceManager: {fileID: 1670572863}
   dice: {fileID: 2183355207357572847, guid: 446a97da0e8ae204988294b945873e02, type: 3}
   deck: {fileID: 192032951}
   editSlot: {fileID: 1206395193}
   editIcon: {fileID: 882106879}
+  selectButton: {fileID: 1377557616}
   allDice: []
   allDiceScripts: []
   arrowLeft: {fileID: 690934564}
@@ -3257,7 +3258,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1337348644}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3266,7 +3267,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.03, y: 0}
+  m_AnchoredPosition: {x: -0.03, y: -0.9}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1337348646
@@ -3438,6 +3439,7 @@ MonoBehaviour:
   graphic: {fileID: 1257077272}
   textMeshPro: {fileID: 941022448}
   diceEditor: {fileID: 1110433800}
+  editFlag: 0
 --- !u!54 &1377557617
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4058,7 +4060,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1570350603}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4067,7 +4069,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.06, y: 0}
+  m_AnchoredPosition: {x: -0.06, y: -0.43}
   m_SizeDelta: {x: 20, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1570350605

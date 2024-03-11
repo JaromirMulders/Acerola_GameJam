@@ -9,7 +9,8 @@ public class DiceProps : ScriptableObject
     {
         None,
         AddOne,
-        Area
+        Area,
+        AddDice
     }
 
     public List<Side> sides = new List<Side> { Side.None , Side.None , Side.None  , Side.None  , Side.None  , Side.None };

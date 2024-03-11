@@ -14,6 +14,8 @@ public class Dice : MonoBehaviour
     public List<GameObject> sideObjects = new List<GameObject>();
     public int[] diceValues = { 1, 2, 3, 4, 5, 6 };
 
+    public bool skipFX = false;
+
     public bool mouseState = false;
 
     private Vector3[] sides =
@@ -24,6 +26,7 @@ public class Dice : MonoBehaviour
     };
 
     private Rigidbody rigidBody;
+
 
 
     void Start()
@@ -64,6 +67,13 @@ public class Dice : MonoBehaviour
                 spriteRenderer.enabled = true;
                 spriteRenderer.sprite = sprite;
             }
+            else if (diceProps.sides[i] == DiceProps.Side.AddDice)
+            {
+                spriteRenderer.enabled = true;
+                spriteRenderer.sprite = sprite;
+            }
+
+
 
         }
     }

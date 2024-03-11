@@ -85,6 +85,9 @@ public class DiceEditor : MonoBehaviour
                 else
                 {
                     if(!allDiceScripts[i].mouseState) allDice[i].transform.eulerAngles += randomRot[i] * 50.0f * Time.deltaTime;
+
+                    allDice[i].layer = LayerMask.NameToLayer("Default");
+                    SetLayerRecursively(allDice[i].transform, LayerMask.NameToLayer("Default"));
                 }
 
                 if (allDiceScripts[i].mouseState)
@@ -98,9 +101,7 @@ public class DiceEditor : MonoBehaviour
                         dicePositions[i] = editSlot.transform.position;
 
                         allDice[i].layer = LayerMask.NameToLayer("FX");
-
                         SetLayerRecursively(allDice[i].transform, LayerMask.NameToLayer("FX"));
-
                     }
                 }
                 else
@@ -128,20 +129,19 @@ public class DiceEditor : MonoBehaviour
     {
         StartCoroutine(EditDiceFx());
 
-
     }
 
     IEnumerator EditDiceFx()
     {
         float distort = 0.0f;
-        float duration = 3.0f;
+        float duration = 1.0f;
         float startTime = Time.time;
         float endTime = startTime + duration;
 
         while (Time.time < endTime)
         {
             float t = (Time.time - startTime) / duration;
-            distort = Mathf.Lerp(0.0f, 1.0f, Global.SmoothStep(0.0f,1.0f,t));
+            distort = Mathf.Lerp(0.0f, 0.25f, Global.SmoothStep(0.0f,1.0f,t * t));
 
             diceDistort.SetFloat("_Distort", distort);
 
@@ -150,23 +150,27 @@ public class DiceEditor : MonoBehaviour
 
         diceDistort.SetFloat("_Distort", 1.0f);
 
+        Deck deckScript = deck.GetComponent<Deck>();
+        deckScript.diceDeck[selectedDice - 1].sides[selectedSide] = editMode;
+
+        allDice[selectedDice - 1].GetComponent<Dice>().AddProps(deck.diceDeck[selectedDice - 1]);
+
         startTime = Time.time;
         endTime = startTime + duration;
 
         while (Time.time < endTime)
         {
             float t = (Time.time - startTime) / duration;
-            distort = Mathf.Lerp(1.0f, 0.0f, Global.SmoothStep(0.,1.,t));
+            distort = Mathf.Lerp(0.25f, 0.0f, Global.SmoothStep(0.0f,1.0f,t  * t));
 
             diceDistort.SetFloat("_Distort", distort);
 
             yield return null;
         }
 
+        yield return new WaitForSeconds(0.5f);
 
 
-        Deck deckScript = deck.GetComponent<Deck>();
-        deckScript.diceDeck[selectedDice - 1].sides[selectedSide] = editMode;
 
         manager.SetStageState(GameManager.StageState.Game);
 

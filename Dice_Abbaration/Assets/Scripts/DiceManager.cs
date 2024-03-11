@@ -11,6 +11,7 @@ using UnityEngine.UIElements;
 public class DiceManager : MonoBehaviour
 {
     public GameManager gameManager;
+    public AddDice addDice;
 
     public GameObject dice;
 
@@ -42,6 +43,8 @@ public class DiceManager : MonoBehaviour
     private bool fxFlag = false;
 
     private Vector3 baseScale = new Vector3(50.0f, 50.0f, 50.0f);
+
+    public int[] amountOfDice = { 0, 0, 0, 0, 0, 0 };
 
     private Vector3[] diceAngles =
     {
@@ -152,6 +155,7 @@ public class DiceManager : MonoBehaviour
             allDiceScripts[i].CheckSide();
             diceValues.Add(allDiceScripts[i].currentSide);
 
+            amountOfDice[allDiceScripts[i].currentSide - 1]++;
         }
 
         // Sort allDice and allDiceScripts based on diceValues
@@ -320,6 +324,7 @@ public class DiceManager : MonoBehaviour
 
         selectedSide = 0;
 
+        scoring.SetCanScore(true);
 
         Vector3 growScale = Vector3.Scale(baseScale, new Vector3(1.2f, 1.2f, 1.2f));
         Vector3 diceScale = Vector3.one;
@@ -329,11 +334,22 @@ public class DiceManager : MonoBehaviour
             if (allDiceScripts[i].mouseState) selectedSide = allDiceScripts[i].currentSide;
         }
 
+        for (int i = 0; i < amountOfDice.Length; i++)
+        {
+            //if (amountOfDice[i] == addDice.requiredAmount && i == addDice.requiredDice && addDice.isUsed == false)
+            if (amountOfDice[i] >= addDice.requiredAmount && addDice.isUsed == false)
+            {
+                addDice.SetAvailible(true);
+            }
+        }
+
         for (int i = 0; i < allDice.Count; i++)
         {
             if (allDiceScripts[i].currentSide == selectedSide && allSlotScripts[allDiceScripts[i].currentSide - 1].isSlotUsed == false )
             {
                 diceScale = growScale;
+
+
 
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -376,7 +392,10 @@ public class DiceManager : MonoBehaviour
             if (Vector3.Distance(allDice[i].transform.position, targetPos) > 0.01) destroyFlag = false;
         }
 
+        addDice.SetAvailible(false);
+
         if (destroyFlag){
+
             Reset();
             return;
         }
@@ -397,10 +416,15 @@ public class DiceManager : MonoBehaviour
     {
         StopAllCoroutines();
 
-        scoring.SetCanScore(true);
+        addDice.SetAvailible(false);
 
         allDiceScripts.Clear();
         dicePositions.Clear();
+
+        for (int i = 0; i < amountOfDice.Length; i++)
+        {
+            amountOfDice[i] = 0;
+        }
 
         for (int i = 0; i < allDice.Count; i++)
         {

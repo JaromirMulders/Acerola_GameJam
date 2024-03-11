@@ -17,7 +17,7 @@ public class ScorePlate : MonoBehaviour
     public SpriteRenderer boon;
     public TextMeshPro textMeshPro;
 
-    private int scoreToReach = 0;
+    public int scoreToReach = 0;
 
     public bool canScore = true;
 
@@ -41,7 +41,8 @@ public class ScorePlate : MonoBehaviour
     {
         float t = 10.0f * Time.deltaTime;
 
-        if(Global.score >= scoreToReach && canScore)
+
+        if (Global.score >= scoreToReach && canScore)
         {
             background.color = Color.white;
         }

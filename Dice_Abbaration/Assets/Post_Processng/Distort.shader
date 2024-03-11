@@ -66,9 +66,11 @@ Shader"Distort/fade"
         float getStepped(float n,float p, float stepSize, float stepChance)
         {
             n = floor(n * stepSize) / stepSize;
-            float r = hash11(n);
-            r = smoothstep(1.0 - stepChance, 1.0, r);
+            float r = hash11(p);
+            r = smoothstep(1. - stepChance, 1., r);
+
             n = lerp(n * r, n, stepChance);
+
             return n;
         }
 

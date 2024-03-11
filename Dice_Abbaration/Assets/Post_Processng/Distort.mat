@@ -64,7 +64,7 @@ Material:
     - _Distort: 0
     - _DstBlend: 0
     - _Fade: 1
-    - _Frequency: 1
+    - _Frequency: 20
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
@@ -75,7 +75,7 @@ Material:
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
-    - _StepChance: 0.1
+    - _StepChance: 1
     - _StepSize: 20
     - _UVSec: 0
     - _ZWrite: 1
@@ -83,5 +83,5 @@ Material:
     - _AmpRatio: {r: 1, g: 0.5, b: 0.25, a: 0.125}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _FreqRatio: {r: 20, g: 40, b: 20, a: 10}
+    - _FreqRatio: {r: 10, g: 5, b: 8, a: 1}
   m_BuildTextureStacks: []

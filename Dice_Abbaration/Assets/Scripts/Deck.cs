@@ -30,8 +30,11 @@ public class Deck : MonoBehaviour
         }
     }
 
-    void Update()
+
+    public void AddDice()
     {
-        
+        DiceProps diceProps = ScriptableObject.CreateInstance<DiceProps>();
+        diceProps.name = "Dice_" + diceDeck.Count.ToString();
+        diceDeck.Add(diceProps);
     }
 }

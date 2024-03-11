@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     public DiceEditor diceEditor;
     public DiceManager diceManager;
     public Scoring scoring;
+    public AddDice addDice;
 
     public enum StageState
     {
@@ -44,6 +45,7 @@ public class GameManager : MonoBehaviour
         }
         if (stageState == StageState.Game)
         {
+            ResetBefore();
             Action reset = () => ResetEditDice();
             StartCoroutine(RotateTo(cameraObj, cameraObj.transform.eulerAngles, new Vector3(90.0f,0.0f,0.0f), 2.0f, reset));
             Physics.gravity = new Vector3(0, -9.81f, 0);
@@ -59,11 +61,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void ResetBefore()
+    {
+        scoring.NewStage();
+        addDice.UpdateRequirments();
+        diceManager.NewStage();
+    }
+
     public void ResetEditDice()
     {
         diceEditor.Reset();
-        diceManager.NewStage();
-        scoring.NewStage();
     }
 
     public void GameOver()

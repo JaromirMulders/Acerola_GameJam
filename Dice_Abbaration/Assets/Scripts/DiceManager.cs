@@ -214,7 +214,9 @@ public class DiceManager : MonoBehaviour
 
             int side = GameObject.Find("Dice_" + i.ToString()).GetComponent<Dice>().currentSide - 1;
 
-            if(deck.diceDeck[i].sides[side] != DiceProps.Side.None)
+            if((deck.diceDeck[i].sides[side] != DiceProps.Side.None) &&
+                (deck.diceDeck[i].sides[side] != DiceProps.Side.AddOne) &&
+                (deck.diceDeck[i].sides[side] != DiceProps.Side.Touch))
             {
                 float duration = 0.2f;  
                 float timer = 0.0f;
@@ -399,7 +401,7 @@ public class DiceManager : MonoBehaviour
 
         currentDiceScript.SetText(side, currentDiceScript.diceValues[side].ToString());
 
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
     }
 
     private void CollectDice()

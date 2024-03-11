@@ -180,7 +180,7 @@ public class Dice : MonoBehaviour
                 if (myDiceProps.sides[i] == DiceProps.Side.Touch)
                 {
                     diceValues[i] += diceCollisionAmount;
-                    SetText(i, diceValues[i].ToString());
+                    SetText(i,"+" + diceCollisionAmount.ToString());
                 }
             }
         }

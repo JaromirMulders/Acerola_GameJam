@@ -4,7 +4,7 @@ Shader "Custom/Pixelate"
     {
         _MainTex ("Texture", 2D) = "white" {}
         _Index ("Refraction Index", Vector) = (1.0, 1.0, 1.0, 1.0)
-        _Amount ("Amount", Range(0,1)) = 1.0
+        _Amount ("Amount", Float) = 1.0
     }
     SubShader
     {
@@ -65,9 +65,9 @@ Shader "Custom/Pixelate"
             float d = length(sUv);
                   d = smoothstep(1.7, 0.9, d);
 
-            fixed4 col = fixed4(tex2D(_MainTex, redTexCoord).rgb, 1.0);
-            col.g = tex2D(_MainTex, greenTexCoord).g;
-            col.b = tex2D(_MainTex, blueTexCoord).b;
+            fixed4 col = fixed4(tex2D(_MainTex, float2(redTexCoord.x, uv.y)).rgb, 1.0);
+            col.g = tex2D(_MainTex, float2(greenTexCoord.x, uv.y)).g;
+            col.b = tex2D(_MainTex, float2(blueTexCoord.x,uv.y)).b;
             
             col *= d;
     

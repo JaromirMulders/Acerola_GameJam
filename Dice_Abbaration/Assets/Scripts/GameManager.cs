@@ -75,6 +75,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        Global.score = 0;
         SetStageState(StageState.StartScreen);
     }
 

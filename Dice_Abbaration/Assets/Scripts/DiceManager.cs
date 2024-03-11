@@ -7,6 +7,7 @@ using System.Linq;
 using Unity.VisualScripting;
 using TMPro;
 using UnityEngine.UIElements;
+using static DiceProps;
 
 public class DiceManager : MonoBehaviour
 {
@@ -80,6 +81,7 @@ public class DiceManager : MonoBehaviour
 
     void Update()
     {
+
         if (gameState == GameState.Throw)
         {
 
@@ -205,11 +207,30 @@ public class DiceManager : MonoBehaviour
 
         for (int i = 0; i < allDiceScripts.Count; i++)
         {
-            Dice diceScript = GameObject.Find("Dice_" + i).GetComponent<Dice>();
+            GameObject diceObj = GameObject.Find("Dice_" + i);
+            Dice diceScript = diceObj.GetComponent<Dice>();
 
             if (diceScript.skipFX) continue;
 
             int side = GameObject.Find("Dice_" + i.ToString()).GetComponent<Dice>().currentSide - 1;
+
+            if(deck.diceDeck[i].sides[side] != DiceProps.Side.None)
+            {
+                float duration = 0.2f;  // Duration in seconds
+                float timer = 0.0f;
+
+                while (timer < duration)
+                {
+                    float t = timer / duration;
+                    diceObj.transform.localScale = Vector3.Lerp(baseScale, new Vector3(65.0f,65.0f,65.0f), Global.SmoothStep(0.0f,0.8f,t));
+
+                    timer += Time.deltaTime;
+                    yield return null;
+                }
+
+                diceObj.transform.localScale = baseScale;
+            } 
+
 
             if (deck.diceDeck[i].sides[side] == DiceProps.Side.Area)
             {
@@ -229,6 +250,16 @@ public class DiceManager : MonoBehaviour
                 FXs.Add(addDiceCoroutine);
 
                 yield return addDiceCoroutine;
+            }
+            else if (deck.diceDeck[i].sides[side] == DiceProps.Side.Pull)
+            {
+                GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
+                fxDice.transform.Find("Ring").gameObject.SetActive(true);
+
+                Coroutine pullCoroutine = StartCoroutine(PullFx(fxDice));
+                FXs.Add(pullCoroutine);
+
+                yield return pullCoroutine;
             }
         }
 
@@ -286,6 +317,58 @@ public class DiceManager : MonoBehaviour
         dicePositions.Clear();
 
         SetDicePosition();
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    IEnumerator PullFx(GameObject gameObject)
+    {
+        Dice currentDiceScript = gameObject.GetComponent<Dice>();
+
+        Ring ring = gameObject.transform.Find("Ring").GetComponent<Ring>();
+
+        Collider[] colliders = Physics.OverlapSphere(gameObject.transform.position, ring.radSize);
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            if (allDice[i] == gameObject) continue;
+
+            Rigidbody rb = allDice[i].GetComponent<Rigidbody>();
+            rb.isKinematic = false;
+        }
+
+        foreach (Collider collider in colliders)
+        {
+            GameObject diceObj = collider.gameObject;
+            Dice diceScript = diceObj.GetComponent<Dice>();
+
+
+            if (diceObj == gameObject || diceScript == null)
+            {
+                continue;
+            }
+
+            Rigidbody rb = diceObj.GetComponent<Rigidbody>();
+
+            Vector3 pullDirection = gameObject.transform.position - diceObj.transform.position;
+
+            float pullForce = 35.0f;
+            rb.AddForce(pullDirection.normalized * pullForce, ForceMode.Impulse);
+
+        }
+
+        yield return new WaitForSeconds(0.15f);
+
+
+        for (int i = 0; i < allDice.Count; i++)
+        {
+            while (allDiceScripts[i].isMoving)
+            {
+                yield return null;
+            }
+            Rigidbody rb = allDice[i].GetComponent<Rigidbody>();
+            rb.isKinematic = true;
+        }
 
         yield return new WaitForSeconds(0.5f);
     }

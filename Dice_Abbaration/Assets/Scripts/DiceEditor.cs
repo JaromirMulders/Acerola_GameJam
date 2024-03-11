@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class DiceEditor : MonoBehaviour
@@ -25,7 +26,7 @@ public class DiceEditor : MonoBehaviour
     private Vector3 baseScale = new Vector3(50.0f, 50.0f, 50.0f);
     private List<Vector3> randomRot = new List<Vector3>();
 
-    private int selectedDice = 0;
+    public int selectedDice = 0;
     private int selectedSide = 0;
 
     public DiceProps.Side editMode;
@@ -243,11 +244,12 @@ public class DiceEditor : MonoBehaviour
 
     private Vector3 GetPosition(int i)
     {
-        int count = Mathf.Max(deck.diceDeck.Count - 1,1);
-        float del = (float)i / (float)count * 2.0f - 1.0f;
-        del *= 4.0f;
 
-        return new Vector3(del, 8.0f, 17.5f);
+        float phase = (float)(i + 1) / (allDice.Count) * 2.0f - 1.0f;
+
+        phase -= 1.0f / allDice.Count;
+
+        return new Vector3(phase * 10.0f, 8.0f, 17.5f);
     }
 
     private void RecalculatePositions()
@@ -265,6 +267,7 @@ public class DiceEditor : MonoBehaviour
 
         for (int i = 0; i < allDice.Count; i++)
         {
+
             dicePositions.Add(GetPosition(i));
             allDice[i].GetComponent<Rigidbody>().isKinematic = true;
             float randomFloat = (Random.value < 0.5f) ? 1.0f : -1.0f;
@@ -275,3 +278,8 @@ public class DiceEditor : MonoBehaviour
 
     }
 }
+
+
+
+
+

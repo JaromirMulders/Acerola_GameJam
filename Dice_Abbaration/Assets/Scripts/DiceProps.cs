@@ -10,7 +10,8 @@ public class DiceProps : ScriptableObject
         None,
         AddOne,
         Area,
-        AddDice
+        AddDice,
+        Pull
     }
 
     public List<Side> sides = new List<Side> { Side.None , Side.None , Side.None  , Side.None  , Side.None  , Side.None };

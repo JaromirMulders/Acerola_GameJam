@@ -26,7 +26,7 @@ public class SelectButton : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(0) && !editFlag)
+        if (Input.GetMouseButtonDown(0) && !editFlag && diceEditor.selectedDice > 0)
         {
             diceEditor.EditDice();
 

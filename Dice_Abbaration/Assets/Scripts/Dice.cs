@@ -72,6 +72,11 @@ public class Dice : MonoBehaviour
                 spriteRenderer.enabled = true;
                 spriteRenderer.sprite = sprite;
             }
+            else if (diceProps.sides[i] == DiceProps.Side.Pull)
+            {
+                spriteRenderer.enabled = true;
+                spriteRenderer.sprite = sprite;
+            }
 
 
 

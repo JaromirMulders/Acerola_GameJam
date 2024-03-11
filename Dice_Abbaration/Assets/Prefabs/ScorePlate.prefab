@@ -100,7 +100,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: X
+  m_text: 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
@@ -127,12 +127,12 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 8
+  m_fontSize: 9.5
   m_fontSizeBase: 8
   m_fontWeight: 400
-  m_enableAutoSizing: 0
-  m_fontSizeMin: 18
-  m_fontSizeMax: 72
+  m_enableAutoSizing: 1
+  m_fontSizeMin: 1
+  m_fontSizeMax: 9.5
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
@@ -338,9 +338,12 @@ MonoBehaviour:
   background: {fileID: 6961066553388083905}
   boon: {fileID: 6099206165549543478}
   textMeshPro: {fileID: 8220598515061543762}
+  scoreToReach: 0
   canScore: 1
   gameManager: {fileID: 0}
+  diceManager: {fileID: 0}
   manager: {fileID: 0}
+  diceManagerScript: {fileID: 0}
   diceEditor: {fileID: 0}
   reward: 1
 --- !u!1 &6961066553388083935

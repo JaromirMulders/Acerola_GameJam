@@ -27,7 +27,6 @@ public class SelectButton : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             diceEditor.EditDice();
-            gameManager.SetStageState(GameManager.StageState.Game);
         }
     }
 }

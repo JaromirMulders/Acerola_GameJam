@@ -1632,7 +1632,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   materials:
-  - {fileID: 2100000, guid: 39367a8a490c1b242abce8a7f93d0363, type: 2}
+  - {fileID: 2100000, guid: 33065a3d49a5c7a4398315608b25257f, type: 2}
   renderTextures: []
 --- !u!1001 &955535469
 PrefabInstance:
@@ -2186,6 +2186,7 @@ MonoBehaviour:
   arrowLeft: {fileID: 690934564}
   arrowRight: {fileID: 1153879001}
   editMode: 0
+  diceDistort: {fileID: 2100000, guid: 33065a3d49a5c7a4398315608b25257f, type: 2}
 --- !u!4 &1110433801
 Transform:
   m_ObjectHideFlags: 0

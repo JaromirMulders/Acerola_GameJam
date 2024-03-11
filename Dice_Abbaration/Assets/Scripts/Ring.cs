@@ -4,11 +4,15 @@ using UnityEngine;
 
 public class Ring : MonoBehaviour
 {
+
+    public Vector3 baseScale;
+
     public float radSize = 3.0f;
 
     // Start is called before the first frame update
     void Start()
     {
+        baseScale = transform.localScale;
     }
 
 
@@ -24,7 +28,7 @@ public class Ring : MonoBehaviour
     {
         Gizmos.color = Color.red;
         //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
-        Gizmos.DrawWireSphere(transform.position, 3.0f);
+        Gizmos.DrawWireSphere(transform.position, radSize);
     }
 
 }

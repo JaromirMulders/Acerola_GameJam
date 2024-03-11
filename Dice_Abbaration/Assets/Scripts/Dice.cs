@@ -32,9 +32,9 @@ public class Dice : MonoBehaviour
     private Rigidbody rigidBody;
 
 
-
     void Start()
     {
+
         rigidBody = GetComponent<Rigidbody>();
     }
 
@@ -168,7 +168,7 @@ public class Dice : MonoBehaviour
     void OnCollisionEnter(Collision collision)
     {
         GameObject collisionObj = collision.gameObject;
-        
+
         if (collisionObj.GetComponent<Dice>() != null){
 
             diceCollisionAmount++;

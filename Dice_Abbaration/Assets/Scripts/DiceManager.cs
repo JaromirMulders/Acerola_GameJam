@@ -29,6 +29,8 @@ public class DiceManager : MonoBehaviour
     public float diceDist = 1.0f;
     private int selectedSide = 0;
 
+    public GameObject spawnObj;
+    private Vector3 spawnPosition;
 
     public List<GameObject> allDice = new List<GameObject>();
     public List<Vector3> dicePositions = new List<Vector3>();
@@ -73,6 +75,8 @@ public class DiceManager : MonoBehaviour
 
     void Start()
     {
+        spawnPosition = spawnObj.transform.position; 
+
         for(int i = 0;i < allSlots.Count;i++)
         {
             allSlotScripts.Add(allSlots[i].GetComponent<Slot>());
@@ -284,7 +288,7 @@ public class DiceManager : MonoBehaviour
     {
         Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
 
-        GameObject newDice = Instantiate(dice, new Vector3(-7.0f, 5.0f, 0.0f), startRotation);
+        GameObject newDice = Instantiate(dice, spawnPosition, startRotation);
         newDice.name = "Dice_" + (allDice.Count).ToString();
 
         allDice.Add(newDice);
@@ -301,7 +305,7 @@ public class DiceManager : MonoBehaviour
 
         Rigidbody diceBody = newDice.GetComponent<Rigidbody>();
 
-        Vector3 throwDir = new Vector3(UnityEngine.Random.Range(1.0f, 2.0f), -0.5f, UnityEngine.Random.Range(-1.0f, 1.0f));
+        Vector3 throwDir = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.5f, -1.0f), UnityEngine.Random.Range(-1.0f, -0.5f));
         diceBody.AddForce(throwDir * throwForce, ForceMode.Impulse);
         Vector3 rotDir = Global.Random3(new Vector2(10.0f, 360f));
         diceBody.AddTorque(rotDir * rotForce, ForceMode.Impulse);
@@ -518,18 +522,16 @@ public class DiceManager : MonoBehaviour
 
     IEnumerator AddDice()
     {
-
-
         Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
 
-        GameObject newDice = Instantiate(dice, new Vector3(-7.0f, 5.0f, 0.0f), startRotation);
+        GameObject newDice = Instantiate(dice, spawnPosition, startRotation);
         newDice.name = "Dice_" + allDice.Count.ToString();
 
         newDice.transform.parent = transform;
 
         Rigidbody diceBody = newDice.GetComponent<Rigidbody>();
 
-        Vector3 throwDir = new Vector3(UnityEngine.Random.Range(1.0f, 2.0f), -0.5f, UnityEngine.Random.Range(-1.0f, 1.0f));
+        Vector3 throwDir = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.5f, -1.0f), UnityEngine.Random.Range(-1.0f, -0.5f));
         diceBody.AddForce(throwDir * throwForce, ForceMode.Impulse);
         Vector3 rotDir = Global.Random3(new Vector2(10.0f, 360f));
         diceBody.AddTorque(rotDir * rotForce, ForceMode.Impulse);
@@ -710,7 +712,7 @@ public class DiceManager : MonoBehaviour
         {
             Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
 
-            GameObject newDice = Instantiate(dice, new Vector3(-7.0f, 5.0f, 0.0f), startRotation);
+            GameObject newDice = Instantiate(dice, spawnPosition, startRotation);
             newDice.name = "Dice_" + i.ToString();
 
             allDice.Add(newDice);
@@ -721,7 +723,7 @@ public class DiceManager : MonoBehaviour
 
             Rigidbody diceBody = newDice.GetComponent<Rigidbody>();
 
-            Vector3 throwDir = new Vector3(UnityEngine.Random.Range(1.0f, 2.0f), -0.5f, UnityEngine.Random.Range(-1.0f, 1.0f));
+            Vector3 throwDir = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.5f, -1.0f), UnityEngine.Random.Range(-1.0f, -0.5f));
             diceBody.AddForce(throwDir * throwForce, ForceMode.Impulse);
             Vector3 rotDir = Global.Random3(new Vector2(10.0f, 360f));
             diceBody.AddTorque(rotDir * rotForce, ForceMode.Impulse);

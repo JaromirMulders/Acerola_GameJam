@@ -151,7 +151,9 @@ MonoBehaviour:
   - {fileID: 469789613483953066}
   - {fileID: 3226755118888256963}
   diceValues: 010000000200000003000000040000000500000006000000
+  skipFX: 0
   mouseState: 0
+  diceCollisionAmount: 0
 --- !u!1 &4694344344982886497
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,6 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8a7210ac0f3afd46a81e132a37847c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  baseScale: {x: 0, y: 0, z: 0}
   radSize: 3
 --- !u!1001 &1675626201508601434
 PrefabInstance:

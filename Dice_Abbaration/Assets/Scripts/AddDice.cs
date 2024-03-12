@@ -37,13 +37,13 @@ public class AddDice : MonoBehaviour
         }
     }
 
-    public void UpdateRequirments()
+    public void UpdateRequirments(bool randomize = true)
     {
         isUsed = false;
         slot.setSlotState(false);
 
-        requiredDice = Random.Range(0, 6);
-        textMeshPro.text = requiredAmount.ToString() + "X" + (requiredDice + 1).ToString();
+        if(randomize) requiredDice = Random.Range(0, 6);
+        textMeshPro.text = requiredAmount.ToString() + "X" + (requiredDice + diceManager.baseVal).ToString();
     }
 
     public void SetAvailible(bool state)

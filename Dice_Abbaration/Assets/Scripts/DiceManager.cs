@@ -280,6 +280,13 @@ public class DiceManager : MonoBehaviour
 
                 yield return addDiceCoroutine;
             }
+            else if (deck.diceDeck[i].sides[side] == DiceProps.Side.Multiply)
+            {
+                Coroutine addDiceCoroutine = StartCoroutine(MultiplyFx(fxDice));
+                FXs.Add(addDiceCoroutine);
+
+                yield return addDiceCoroutine;
+            }
         }
 
         // Wait for all coroutines to finish
@@ -436,7 +443,20 @@ public class DiceManager : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
     }
 
-    IEnumerator RingFx(GameObject gameObject)
+    IEnumerator MultiplyFx(GameObject gameObject)
+    {
+        Dice diceScript = gameObject.GetComponent<Dice>();
+
+        int id = diceScript.currentSide - 1;
+
+        diceScript.diceValues[id] = diceScript.diceValues[id] * amountOfDice[id];
+
+        diceScript.SetText(id, diceScript.diceValues[id].ToString());
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
+        IEnumerator RingFx(GameObject gameObject)
     {
         Dice currentDiceScript = gameObject.GetComponent<Dice>();
 

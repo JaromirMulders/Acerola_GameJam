@@ -7,7 +7,7 @@ public class UpgradeButton : MonoBehaviour
 {
     public SpriteRenderer graphic;
 
-    private bool mouseState = false;
+    public bool mouseState = false;
 
     Vector3 baseScale = Vector3.one;
     Vector3 growScale = new Vector3(1.1f, 1.1f, 1.1f);
@@ -56,6 +56,8 @@ public class UpgradeButton : MonoBehaviour
                 }
                 upgradeScreen.SetActive(false);
 
+                GameObject.Find("Requirments_AddDice").GetComponent<AddDice>().UpdateRequirments(false);
+
             }
         }
         else
@@ -66,7 +68,12 @@ public class UpgradeButton : MonoBehaviour
 
     }
 
-    private void OnMouseEnter()
+    private void OnEnable()
+    {
+        mouseState = false;
+    }
+
+        private void OnMouseEnter()
     {        
         mouseState = true;
     }

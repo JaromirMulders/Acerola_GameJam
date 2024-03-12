@@ -33,6 +33,15 @@ public class DiceEditor : MonoBehaviour
 
     public Material diceDistort;
 
+    public enum Modifier
+    {
+        None,
+        AllSides,
+        Randomize
+    }
+
+    public Modifier modifier = Modifier.None;
+
     private Vector3[] diceAngles =
 {
         new Vector3(270.0f, 0.0f, 0.0f), //1
@@ -52,6 +61,7 @@ public class DiceEditor : MonoBehaviour
 
         boxCollider = GetComponent<BoxCollider>();
     }
+
 
     void Update()
     {
@@ -117,6 +127,15 @@ public class DiceEditor : MonoBehaviour
 
     }
 
+    public void Randomize()
+    {
+        DiceProps.Side prevMode = editMode;
+
+        editMode = Global.GetRandomEnum<DiceProps.Side>();
+
+        if (editMode == DiceProps.Side.None || editMode == prevMode) Randomize();
+    }
+
     void SetLayerRecursively(Transform obj, int layer)
     {
         obj.gameObject.layer = layer;
@@ -153,7 +172,19 @@ public class DiceEditor : MonoBehaviour
         diceDistort.SetFloat("_Distort", 1.0f);
 
         Deck deckScript = deck.GetComponent<Deck>();
-        deckScript.diceDeck[selectedDice - 1].sides[selectedSide] = editMode;
+
+        if(modifier == Modifier.None)
+        {
+            deckScript.diceDeck[selectedDice - 1].sides[selectedSide] = editMode;
+        }
+        else if(modifier == Modifier.AllSides)
+        {
+            for (int i = 0; i < 6; i++)
+            {
+                deckScript.diceDeck[selectedDice - 1].sides[i] = editMode;
+            }
+        }
+
 
         allDice[selectedDice - 1].GetComponent<Dice>().AddProps(deck.diceDeck[selectedDice - 1]);
 
@@ -169,6 +200,8 @@ public class DiceEditor : MonoBehaviour
 
             yield return null;
         }
+
+        diceDistort.SetFloat("_Distort", 0.0f);
 
         yield return new WaitForSeconds(0.5f);
 
@@ -197,6 +230,8 @@ public class DiceEditor : MonoBehaviour
 
     public void Reset()
     {
+        modifier = Modifier.None;
+
         for(int i = 0; i < allDice.Count; i++)
         {
             Destroy(allDice[i]);

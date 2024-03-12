@@ -5,9 +5,9 @@ using UnityEngine;
 public static class Global
 {
     public static int score = 0;
-    public static int winScore = 1000;
+    public static int winScore = 250;
     public static int stage = 0;
-    public static int sparePoints = 0;
+    public static int sparePoints = 100;
 
     public static Vector3 Random3(Vector2 range)
     {

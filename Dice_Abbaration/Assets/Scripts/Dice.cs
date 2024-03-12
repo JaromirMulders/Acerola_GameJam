@@ -100,7 +100,11 @@ public class Dice : MonoBehaviour
                 spriteRenderer.enabled = true;
                 spriteRenderer.sprite = sprite;
             }
-
+            else if (diceProps.sides[i] == DiceProps.Side.Multiply)
+            {
+                spriteRenderer.enabled = true;
+                spriteRenderer.sprite = sprite;
+            }
 
         }
     }
@@ -182,9 +186,9 @@ public class Dice : MonoBehaviour
 
         if (collisionObj.GetComponent<Dice>() != null){
 
-            diceCollisionAmount++;
-
             if (myDiceProps == null) return;
+
+            diceCollisionAmount++;
 
             for (int i = 0; i < myDiceProps.sides.Count; i++)
             {

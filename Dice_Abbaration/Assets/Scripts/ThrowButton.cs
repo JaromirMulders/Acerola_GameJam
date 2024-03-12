@@ -7,6 +7,7 @@ public class ThrowButton : MonoBehaviour
 {
     public DiceManager diceManager;
     public GameObject graphic;
+    public SpriteRenderer spriteRenderer;
     public TextMeshPro textMeshPro;
     public GameObject upgradeScreen;
 
@@ -19,7 +20,17 @@ public class ThrowButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(diceManager.gameState == DiceManager.GameState.Throw)
+        {
+            spriteRenderer.color = Color.white;
+        }
+        else
+        {
+            spriteRenderer.color = Color.grey;
+
+        }
+
+
     }
 
     private void OnMouseOver()

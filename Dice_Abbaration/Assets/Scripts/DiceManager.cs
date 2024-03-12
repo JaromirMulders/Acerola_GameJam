@@ -53,6 +53,8 @@ public class DiceManager : MonoBehaviour
 
     public int[] amountOfDice = { 0, 0, 0, 0, 0, 0 };
 
+    public GameObject upgradeScreen;
+
     private Vector3[] diceAngles =
     {
         new Vector3(0.0f, 0.0f, 0.0f), //1
@@ -271,6 +273,13 @@ public class DiceManager : MonoBehaviour
 
                 yield return pullCoroutine;
             }
+            else if (deck.diceDeck[i].sides[side] == DiceProps.Side.Lucky)
+            {
+                Coroutine addDiceCoroutine = StartCoroutine(LuckyFX());
+                FXs.Add(addDiceCoroutine);
+
+                yield return addDiceCoroutine;
+            }
         }
 
         // Wait for all coroutines to finish
@@ -327,6 +336,50 @@ public class DiceManager : MonoBehaviour
         dicePositions.Clear();
 
         SetDicePosition();
+
+        yield return new WaitForSeconds(0.5f);
+    }
+
+    IEnumerator LuckyFX()
+    {
+        Quaternion startRotation = Quaternion.Euler(Global.Random3(new Vector2(0.0f, 360.0f)));
+
+        GameObject newDice = Instantiate(dice, spawnPosition, startRotation);
+        newDice.name = "Dice_" + (allDice.Count).ToString();
+
+        Dice diceScript = newDice.GetComponent<Dice>();
+
+        newDice.transform.parent = transform;
+
+        Rigidbody diceBody = newDice.GetComponent<Rigidbody>();
+
+        Vector3 throwDir = new Vector3(UnityEngine.Random.Range(0.0f, 1.0f), UnityEngine.Random.Range(0.5f, -1.0f), UnityEngine.Random.Range(-1.0f, -0.5f));
+        diceBody.AddForce(throwDir * throwForce, ForceMode.Impulse);
+        Vector3 rotDir = Global.Random3(new Vector2(10.0f, 360f));
+        diceBody.AddTorque(rotDir * rotForce, ForceMode.Impulse);
+
+        yield return new WaitForSeconds(0.15f);
+
+        while (diceScript.isMoving)
+        {
+            yield return null;
+        }
+
+        diceScript.CheckSide();
+
+        yield return new WaitForSeconds(0.5f);
+
+        if(diceScript.currentSide >= 5)
+        {
+            upgradeScreen.SetActive(true);
+        }
+
+        while (upgradeScreen.activeSelf)
+        {
+            yield return null;
+        }
+
+        Destroy(newDice);
 
         yield return new WaitForSeconds(0.5f);
     }

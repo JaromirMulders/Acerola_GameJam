@@ -91,6 +91,9 @@ public class ScorePlate : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0) && Global.score >= scoreToReach && canScore && diceManagerScript.gameState == DiceManager.GameState.Throw)
         {
+            Global.sparePoints += Global.score - scoreToReach;
+            GameObject.Find("CurrencyPoints").GetComponent<TextMeshPro>().text = Global.sparePoints.ToString();
+
             diceEditor.editMode = reward;
             manager.SetStageState(GameManager.StageState.EditDice);
         }

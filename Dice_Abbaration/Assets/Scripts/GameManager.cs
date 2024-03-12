@@ -14,6 +14,11 @@ public class GameManager : MonoBehaviour
     public AddDice addDice;
     public TextMeshPro stageCounter;
     public GameObject upgradeScreen;
+    public GameObject points;
+
+    public Vector3 pointsGoTo = Vector3.zero;
+    public Quaternion pointsRotTo = Quaternion.identity;
+
 
     public enum StageState
     {
@@ -39,6 +44,9 @@ public class GameManager : MonoBehaviour
 
         if (stageState == StageState.StartScreen)
         {
+            pointsGoTo = Vector3.zero;
+            pointsRotTo = Quaternion.identity;
+
             Global.stage = 0;
             GameObject.Find("GameOver").transform.GetChild(0).gameObject.SetActive(false);
             GameObject.Find("Win").transform.GetChild(0).gameObject.SetActive(false);
@@ -48,6 +56,9 @@ public class GameManager : MonoBehaviour
         }
         if (stageState == StageState.Game)
         {
+            pointsGoTo = Vector3.zero;
+            pointsRotTo = Quaternion.identity;
+
             ResetBefore();
             Action reset = () => ResetEditDice();
             StartCoroutine(RotateTo(cameraObj, cameraObj.transform.eulerAngles, new Vector3(90.0f,0.0f,0.0f), 2.0f, reset));
@@ -59,6 +70,9 @@ public class GameManager : MonoBehaviour
         }
         else if(stageState == StageState.EditDice)
         {
+            pointsGoTo = new Vector3(0.0f, 10.0f, 5.0f);
+            pointsRotTo = Quaternion.Euler(new Vector3(-90.0f, 0.0f, 0.0f));
+
             StartCoroutine(RotateTo(cameraObj,cameraObj.transform.eulerAngles,Vector3.zero, 2.0f));
             Physics.gravity = new Vector3(0, -9.81f, 0);
         }
@@ -97,10 +111,17 @@ public class GameManager : MonoBehaviour
         Quaternion startRotation = gameObject.transform.rotation;
         Quaternion targetRotation = Quaternion.Euler(target);
 
+        Vector3 pointsStartPos = points.transform.position;
+        Quaternion pointsStartRot = points.transform.rotation;
+
         while (t < 1f)
         {
             t += Time.deltaTime / duration;
             gameObject.transform.rotation = Quaternion.Slerp(startRotation, targetRotation, Global.SmoothStep(0.0f,1.0f,t));
+
+            points.transform.position = Vector3.Lerp(pointsStartPos, pointsGoTo, Global.SmoothStep(0.0f, 1.0f, t));
+            points.transform.rotation = Quaternion.Slerp(pointsStartRot, pointsRotTo, Global.SmoothStep(0.0f, 1.0f, t));
+
             yield return null;
         }
 

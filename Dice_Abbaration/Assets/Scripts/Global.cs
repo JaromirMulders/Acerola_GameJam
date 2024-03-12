@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class Global
 {
-    public static int score = 0;
+    public static int score = 600;
     public static int winScore = 250;
     public static int stage = 0;
     public static int sparePoints = 0;

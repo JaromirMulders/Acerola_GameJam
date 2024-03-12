@@ -10,6 +10,11 @@ public class WInButton : MonoBehaviour
     public bool winState = false;
     public TextMeshPro winAmount;
     public DiceManager diceManager;
+    public GameObject winButton;
+
+    private Vector3 baseScale = Vector3.one;
+
+    private bool mouseOver = false;
 
     // Start is called before the first frame update
     void Start()
@@ -26,8 +31,19 @@ public class WInButton : MonoBehaviour
         }
         else
         {
-            button.color = Color.white;
+            if (!mouseOver)
+            {
+                button.color = Color.white;
+
+            }
+            else
+            {
+                button.color = new Color(1.0f,1.0f,1.0f,0.7f);
+            }
             winState = true;
+
+            float t = Mathf.Sin(Time.time * 2.0f) * 0.05f;
+            winButton.transform.localScale = baseScale + new Vector3(t, t, t);
         }
     }
 
@@ -35,10 +51,20 @@ public class WInButton : MonoBehaviour
     {
         if (!winState) return;
 
-        if(Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0))
         {
             diceManager.WinState();
-        }
-        
+        }   
+    }
+
+    private void OnMouseEnter()
+    {
+        mouseOver = true;
+    }
+
+    private void OnMouseExit()
+    {
+        mouseOver = false;
+
     }
 }

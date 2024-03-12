@@ -83,10 +83,10 @@ Shader "Custom/Pixelate"
     
             float2 nUv = sUv;
     
-            nUv *= 250.;
+            nUv *= 500.;
             nUv = floor(nUv);
             
-            nUv /= 250.;
+            nUv /= 500.;
     
             float n = hash21(nUv * iResolution) * 0.07 + 0.93;
             

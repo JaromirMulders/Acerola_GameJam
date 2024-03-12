@@ -13,8 +13,8 @@ public class Post_Processing : MonoBehaviour
         renderTextures = new RenderTexture[2];
         renderTextures[0] = new RenderTexture(Screen.width, Screen.height, 0);
         renderTextures[1] = new RenderTexture(Screen.width, Screen.height, 0);
-        //renderTextures[0].filterMode = FilterMode.Point;
-        //renderTextures[1].filterMode = FilterMode.Point;
+        renderTextures[0].filterMode = FilterMode.Point;
+        renderTextures[1].filterMode = FilterMode.Point;
         renderTextures[0].name = gameObject.name + "_0";
         renderTextures[1].name = gameObject.name + "_1";
 

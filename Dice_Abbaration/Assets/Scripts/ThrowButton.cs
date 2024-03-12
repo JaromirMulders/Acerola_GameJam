@@ -8,6 +8,7 @@ public class ThrowButton : MonoBehaviour
     public DiceManager diceManager;
     public GameObject graphic;
     public TextMeshPro textMeshPro;
+    public GameObject upgradeScreen;
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +24,7 @@ public class ThrowButton : MonoBehaviour
 
     private void OnMouseOver()
     {
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0) && !upgradeScreen.activeSelf)
         {
             diceManager.ThrowDice();
         }

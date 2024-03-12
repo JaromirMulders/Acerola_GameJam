@@ -32,6 +32,9 @@ public class DiceManager : MonoBehaviour
     public GameObject spawnObj;
     private Vector3 spawnPosition;
 
+    public int baseVal = 1;
+    public float baseArea = 1.0f;
+
     public List<GameObject> allDice = new List<GameObject>();
     public List<Vector3> dicePositions = new List<Vector3>();
     public List<Dice> allDiceScripts = new List<Dice>();
@@ -235,13 +238,17 @@ public class DiceManager : MonoBehaviour
                 }
 
                 diceObj.transform.localScale = baseScale;
-            } 
+            }
 
+            GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
+            GameObject ring = fxDice.transform.Find("Ring").gameObject;
+            ring.transform.localScale *= baseArea;
+            Ring ringScript = ring.GetComponent<Ring>();
+            ringScript.radSize *= baseArea;
 
             if (deck.diceDeck[i].sides[side] == DiceProps.Side.Area)
             {
-                GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
-                fxDice.transform.Find("Ring").gameObject.SetActive(true);
+                ring.SetActive(true);
 
                 Coroutine ringCoroutine = StartCoroutine(RingFx(fxDice));
                 FXs.Add(ringCoroutine);
@@ -250,8 +257,6 @@ public class DiceManager : MonoBehaviour
             }
             else if (deck.diceDeck[i].sides[side] == DiceProps.Side.AddDice)
             {
-                GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
-
                 Coroutine addDiceCoroutine = StartCoroutine(AddDiceFX());
                 FXs.Add(addDiceCoroutine);
 
@@ -259,8 +264,7 @@ public class DiceManager : MonoBehaviour
             }
             else if (deck.diceDeck[i].sides[side] == DiceProps.Side.Pull)
             {
-                GameObject fxDice = GameObject.Find("Dice_" + i.ToString());
-                fxDice.transform.Find("Ring").gameObject.SetActive(true);
+                ring.SetActive(true);
 
                 Coroutine pullCoroutine = StartCoroutine(PullFx(fxDice));
                 FXs.Add(pullCoroutine);

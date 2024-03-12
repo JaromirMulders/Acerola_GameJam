@@ -45,7 +45,7 @@ public class Scoring : MonoBehaviour
     {
         for(int i = 0; i < scorePlates.Count; i++)
         {
-            scorePlates[i].SetScorePlates(baseScore * ((i+2)/2) * Global.stage + Random.Range(-3,3));
+            scorePlates[i].SetScorePlates(baseScore * Global.stage + Random.Range(-3,3 + i));
         }
     }
 }

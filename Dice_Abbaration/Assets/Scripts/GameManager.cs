@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 
@@ -11,6 +12,8 @@ public class GameManager : MonoBehaviour
     public DiceManager diceManager;
     public Scoring scoring;
     public AddDice addDice;
+    public TextMeshPro stageCounter;
+    public GameObject upgradeScreen;
 
     public enum StageState
     {
@@ -66,6 +69,15 @@ public class GameManager : MonoBehaviour
         scoring.NewStage();
         addDice.UpdateRequirments();
         diceManager.NewStage();
+
+        stageCounter.text = "Stage: " + Global.stage.ToString();
+
+        int stageMod = Global.stage % 3;
+        if(stageMod == 0)
+        {
+            upgradeScreen.SetActive(true);
+        }
+
     }
 
     public void ResetEditDice()

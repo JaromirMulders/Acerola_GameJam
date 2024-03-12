@@ -80,7 +80,7 @@ Shader "Custom/Floor"
             float s1 = voronoi(uv, 0.001, 0.5);
             float s2 = voronoi(uv, 0.1, 0.5);
             float s3 = voronoi(uv + float2(s1,s2) - float2(0.,_Time.y) * 0.2, 0.05, 0.5);
-            s3 = smoothstep(0.6, 0., s3);
+            s3 = smoothstep(0.7, 0., s3);
     
             float s = smoothstep(0.0, 0.01, s1 - s2);
             s *= s3;

@@ -32,9 +32,10 @@ public class Dice : MonoBehaviour
     private Rigidbody rigidBody;
 
 
+    private DiceManager diceManager;
+
     void Start()
     {
-
         rigidBody = GetComponent<Rigidbody>();
     }
 
@@ -45,12 +46,18 @@ public class Dice : MonoBehaviour
 
     public void AddProps(DiceProps diceProps)
     {
+        diceManager = GameObject.Find("DiceManager").GetComponent<DiceManager>();
+
+        for (int i = 0; i < diceValues.Length; i++)
+        {
+            diceValues[i] = i + diceManager.baseVal;
+            SetText(i, diceValues[i].ToString());
+        }
+
         myDiceProps = diceProps;
 
         for(int i = 0; i < diceProps.sides.Count; i++)
         {
-            diceValues[i] = (i + 1);
-
             sideObjects[i].GetComponent<TextMeshPro>().text = "";
             Transform graphicsTransform = sideObjects[i].transform.Find("graphic");
             GameObject graphicsObject = graphicsTransform.gameObject;
@@ -88,7 +95,11 @@ public class Dice : MonoBehaviour
                 spriteRenderer.enabled = true;
                 spriteRenderer.sprite = sprite;
             }
-
+            else if (diceProps.sides[i] == DiceProps.Side.Lucky)
+            {
+                spriteRenderer.enabled = true;
+                spriteRenderer.sprite = sprite;
+            }
 
 
         }

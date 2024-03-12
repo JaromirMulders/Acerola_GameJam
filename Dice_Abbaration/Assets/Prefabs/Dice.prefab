@@ -465,9 +465,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7249428025475238900, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
       propertyPath: m_text
-      value: '2
-
-'
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7249428025475238900, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
+      propertyPath: m_fontSize
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7249428025475238900, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}
+      propertyPath: m_fontSizeMin
+      value: 0.08
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8dd30aab15ef85142bcc84411ff7e087, type: 3}

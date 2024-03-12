@@ -12,7 +12,8 @@ public class DiceProps : ScriptableObject
         Area,
         AddDice,
         Pull,
-        Touch
+        Touch,
+        Lucky
     }
 
     public List<Side> sides = new List<Side> { Side.None , Side.None , Side.None  , Side.None  , Side.None  , Side.None };

@@ -44,12 +44,21 @@ Shader "Custom/Pixelate"
         float3 _Index;
         float _Amount;
 
+        float hash21(float2 p)
+        {
+            float3 p3 = frac(float3(p.xyx) * .1031);
+            p3 += dot(p3, p3.yzx + 33.33);
+            return frac((p3.x + p3.y) * p3.z);
+        }
+
         fixed4 frag(v2f i) : SV_Target
         {
             float2 uv = i.uv;    
             float2 iResolution = _ScreenParams.xy;
             float2 sUv = uv * 2.0 - 1.0;
 
+
+    
             fixed3 refractiveIndex = lerp(fixed3(1.0, 1.0, 1.0), _Index, _Amount);
             fixed2 normalizedTexCoord = uv * 2.0 - 1.0; // [0, 1] -> [-1, 1]
             fixed3 texVec = fixed3(normalizedTexCoord, 1.0);
@@ -63,6 +72,7 @@ Shader "Custom/Pixelate"
     
     
             float d = length(sUv);
+            float nD = d;
                   d = smoothstep(1.7, 0.9, d);
 
             fixed4 col = fixed4(tex2D(_MainTex, float2(redTexCoord.x, uv.y)).rgb, 1.0);
@@ -71,7 +81,18 @@ Shader "Custom/Pixelate"
             
             col *= d;
     
-            return col;
+            float2 nUv = sUv;
+    
+            nUv *= 250.;
+            nUv = floor(nUv);
+            
+            nUv /= 250.;
+    
+            float n = hash21(nUv * iResolution) * 0.07 + 0.93;
+            
+            n = lerp(n, 1., smoothstep(1.5, 0.2, nD));
+    
+            return col * n ;
         }
             ENDCG
         }

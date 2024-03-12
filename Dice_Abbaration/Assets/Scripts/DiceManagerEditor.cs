@@ -1,7 +1,5 @@
-
 using UnityEditor;
 using UnityEngine;
-
 
 [CustomEditor(typeof(DiceManager))]
 public class DiceManagerEditor : Editor
@@ -11,10 +9,10 @@ public class DiceManagerEditor : Editor
         base.OnInspectorGUI();
 
         DiceManager diceManager = (DiceManager)target;
-        
+
         if (GUILayout.Button("Throw"))
         {
-            if(Application.isPlaying) diceManager.ThrowDice();
+            if (Application.isPlaying) diceManager.ThrowDice();
         }
     }
 }
